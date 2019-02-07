@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ma_assignment</string>
+    <string name="et_hint_companyName">Type in company name here</string>
+    <string name="btn_txt_search">Search</string>
+</resources>
