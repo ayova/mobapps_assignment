@@ -1,8 +1,13 @@
 package com.example.agu.ma_assignment;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -57,43 +62,59 @@ import java.util.ArrayList;
 //}
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.recHolder> {
-    private ArrayList<String> mDataset;
+    private ArrayList<String> mDataset = new ArrayList<>();
+    RelativeLayout relRec;
+    private Context mContext;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class recHolder extends RecyclerView.ViewHolder {
+    public class recHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
-        public recHolder(TextView v) {
+        public recHolder(View v) {
             super(v);
-            mTextView = v;
+            relRec = v.findViewById(R.id.relativeLayoutRecycler);
+            mTextView = v.findViewById(R.id.tv_comp);
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RecyclerViewAdapter(ArrayList<String> myDataset) {
-        mDataset = myDataset;
+
+    public RecyclerViewAdapter(ArrayList<String> mDataset, RelativeLayout relRec, Context mContext) {
+        this.mDataset = mDataset;
+        this.relRec = relRec;
+        this.mContext = mContext;
     }
+
 
     // Create new views (invoked by the layout manager)
     @Override
-    public RecyclerViewAdapter.recHolder onCreateViewHolder(ViewGroup parent,
-                                                            int viewType) {
-        // create a new view
-        TextView v = (TextView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recycler_list, parent, false);
-//        ...
-        recHolder vh = new recHolder(v);
-        return vh;
+    public recHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        try {
+            // create a new view
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_list, parent, false);
+            Log.d("onViewHolder", "onCreateViewHolder: view created");
+            //viewholder object to hold the view to be added
+            recHolder rh = new recHolder(view);
+            return rh;
+        }
+        catch (Exception e){
+            Log.e("onViewHolder", "onCreateViewHolder: "+e );
+            recHolder rh = new recHolder(null);
+            return rh;
+        }
+
+
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(recHolder holder, int position) {
+    public void onBindViewHolder(@NonNull recHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        while (position<mDataset.size()) {
+        while (position <= mDataset.size()) {
             holder.mTextView.setText(mDataset.get(position));
         }
     }

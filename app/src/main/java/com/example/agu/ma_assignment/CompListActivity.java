@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
@@ -12,16 +13,19 @@ public class CompListActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mRecyclerAdapter;
     private RecyclerView.LayoutManager mRecyclerLayoutMan;
-    private ArrayList<String> CompNames;
+    private ArrayList<String> CompNames = new ArrayList<>();
 
+    private RelativeLayout relRec;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comp_list);
 
-        CompNames.add("Hello0");
-        CompNames.add("Hello1");
-        CompNames.add("Hello2");
+        relRec = (RelativeLayout) findViewById(R.id.relativeLayoutRecycler);
+
+        CompNames.add(0,"Hello0".toString());
+        CompNames.add(1,"Hello1".toString());
+        CompNames.add(2,"Hello2".toString());
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         // use this setting to improve performance if you know that changes
@@ -33,7 +37,7 @@ public class CompListActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mRecyclerLayoutMan);
 
         // specify an adapter (see also next example)
-        mRecyclerAdapter= new RecyclerViewAdapter(CompNames);
+        mRecyclerAdapter= new RecyclerViewAdapter(CompNames, relRec,this.getApplicationContext());
         mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 }

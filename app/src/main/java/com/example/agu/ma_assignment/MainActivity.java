@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -53,31 +55,39 @@ public class MainActivity extends AppCompatActivity {
     public TextView searchResult;
     public String API_URL = "https://api.companieshouse.gov.uk/";
     public Button btnSearch;
-    public String[][] compData = new String[20][3];
+    public ArrayList<String> CompNames;
     public ListView listCompanies;
 
-    ArrayList<String> listItems=new ArrayList<String>();  //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
-    ArrayAdapter<String> adapter; //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
+    public RelativeLayout relRec;
+
+    public ArrayList<String> listItems=new ArrayList<String>();  //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
+    public ArrayAdapter<String> adapter; //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
         userInput = (EditText) findViewById(R.id.et_companyName);
-        btnSearch = (Button) findViewById(R.id.btn_search);
         //searchResult = (TextView) findViewById(R.id.search_result);
-
+        btnSearch = (Button) findViewById(R.id.btn_search);
+        relRec = (RelativeLayout) findViewById(R.id.relativeLayoutRecycler);
     }
 
 
-    public void btnSearch (View view){
-        Intent inent = new Intent(this, CompListActivity.class);
+    public void btnSearchClick (View view){
+        try {
+//            Intent launchCompList = new Intent(this, CompListActivity.class);
+//            Log.d("btnclicked", "btnSearchClick: clicked");
+//            startActivity(launchCompList);
+            searchCompanies(view);
+            initRecycler();
 
-        // calling an activity using <intent-filter> action name
-        //  Intent inent = new Intent("com.hmkcode.android.ANOTHER_ACTIVITY");
+        }
+        catch (Exception e){
+            Log.e("btnclicked", "btnSearchClick: " +e );
+        }
 
-        startActivity(inent);
     }
 
 
@@ -86,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         //Create request queue
         RequestQueue rQueue = Volley.newRequestQueue(this);
         //Create the actual request (JsonObjecRequest)
-        Log.i("COMPINFO", API_URL+"search/companies?q="+userInput.getText().toString());
+        Log.i("comp", API_URL+"search/companies?q="+userInput.getText().toString());
         String scUrl = API_URL + "search/companies?q=" + userInput.getText().toString();
         JsonObjectRequest JSONretriever = new JsonObjectRequest(
                 Request.Method.GET, //method to send request
@@ -101,10 +111,14 @@ public class MainActivity extends AppCompatActivity {
                             //Log.i("responseJ", arr.get(1).toString());
                             for(int i=0;i<arr.length();i++) {
                                 JSONObject o = arr.getJSONObject(i);
-                                String name = (o.getString("title")).toString();
-                                String number = (o.getString("company_number")).toString();
-                                String address = (o.getString("address_snippet")).toString();
-                                Log.d("jsonresp", "Row: "+(i+1)+" "+name+" | "+number+" | "+address);
+                                String name = (o.getString("title")).toString(); //get company name
+                                String number = (o.getString("company_number")).toString(); // get company number
+                                String address = (o.getString("address_snippet")).toString(); // get company address in one line
+                                CompNames.add(name);
+                                for(int j=0; j<CompNames.size(); j++){
+                                    Log.i("compnames", "onResponse: "+CompNames.get(j));
+                                }
+
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -127,6 +141,14 @@ public class MainActivity extends AppCompatActivity {
         };
         //Add the request to the request queue
         rQueue.add(JSONretriever);
+    }
+
+    public void initRecycler(){
+        Log.d("recycler", "initRecycler: preparing");
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(CompNames,relRec, this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
 }
