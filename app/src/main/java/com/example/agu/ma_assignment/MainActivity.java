@@ -1,13 +1,17 @@
 package com.example.agu.ma_assignment;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 
 // API KEY: sic7yu4YhmpLToiLXPT7bGS_QvXW8SjIPLuhIfoF
@@ -48,24 +53,35 @@ public class MainActivity extends AppCompatActivity {
     public TextView searchResult;
     public String API_URL = "https://api.companieshouse.gov.uk/";
     public Button btnSearch;
-    public ArrayList<String> compNames;
-    private Gson gson;
+    public String[][] compData = new String[20][3];
+    public ListView listCompanies;
+
+    ArrayList<String> listItems=new ArrayList<String>();  //LIST OF ARRAY STRINGS WHICH WILL SERVE AS LIST ITEMS
+    ArrayAdapter<String> adapter; //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
         userInput = (EditText) findViewById(R.id.et_companyName);
         btnSearch = (Button) findViewById(R.id.btn_search);
-        searchResult = (TextView) findViewById(R.id.search_result);
+        //searchResult = (TextView) findViewById(R.id.search_result);
 
-
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gson = gsonBuilder.create();
     }
 
-    // All info of all companies matching search:
+
+    public void btnSearch (View view){
+        Intent inent = new Intent(this, CompListActivity.class);
+
+        // calling an activity using <intent-filter> action name
+        //  Intent inent = new Intent("com.hmkcode.android.ANOTHER_ACTIVITY");
+
+        startActivity(inent);
+    }
+
+
+    // All companies matching search:
     public void searchCompanies( View view){
         //Create request queue
         RequestQueue rQueue = Volley.newRequestQueue(this);
@@ -89,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                                 String number = (o.getString("company_number")).toString();
                                 String address = (o.getString("address_snippet")).toString();
                                 Log.d("jsonresp", "Row: "+(i+1)+" "+name+" | "+number+" | "+address);
-                                }
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
