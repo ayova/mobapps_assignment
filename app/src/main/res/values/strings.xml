@@ -2,4 +2,7 @@
     <string name="app_name">ma_assignment</string>
     <string name="et_hint_companyName">Type in company name here</string>
     <string name="btn_txt_search">Search</string>
+    <string name="search_feature_btn">Search feature</string>
+    <string name="search_btn">Search</string>
+    <string name="searchforcompany_hint">Search for a company by name</string>
 </resources>
