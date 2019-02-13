@@ -16,19 +16,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
     }
-
     public void GoToSearch(View view) {
-
         Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
-
     }
 
-
-    //move to SearchActivity.java when done >>>
-
-
+    public void NodeOpen(View view) {
+        Intent intent = new Intent(this, NodeArcGraph.class);
+        startActivity(intent);
+    }
 }

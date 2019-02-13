@@ -26,6 +26,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".NodeArcGraph">
+            <intent-filter>
+                <action android:name="android.intent.action.NODE_ARC_GRAPH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
