@@ -24,7 +24,14 @@ public class NodeArcGraph extends AppCompatActivity {
 
         v = new NodeArcGenerator(this);
         setContentView(v);
+        getIntentData();
+    }
 
+    private void getIntentData(){
+        if(getIntent().hasExtra("compName") && getIntent().hasExtra("compNumber")){
+            Log.d("intentExtra", "getIntentData: "+getIntent().getStringExtra("compName"));
+            Log.d("intentExtra", "getIntentData: "+getIntent().getStringExtra("compNumber"));
+        }
     }
 
 }

@@ -32,6 +32,13 @@ public class NodeArcGenerator extends View {
         bgCol.setStyle(Paint.Style.FILL);
 
         canvas.drawRect(mrec,bgCol);
+
+        //draw company node in the middle
+        canvas.translate(getWidth()/2,getHeight()/2);
+        Paint cir = new Paint();
+        Node circle = new Node(getWidth(),getHeight(),50);
+        cir.setColor(Color.BLUE);
+        canvas.drawCircle(0,0,50,cir);
     }
 
     @Override

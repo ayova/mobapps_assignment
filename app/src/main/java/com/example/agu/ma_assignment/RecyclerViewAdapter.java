@@ -2,6 +2,7 @@ package com.example.agu.ma_assignment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +18,11 @@ import java.util.ArrayList;
 public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
     private static final String TAG = "RecyclerViewAdapter";
     private ArrayList<String> CNames = new ArrayList<String>();
+    private ArrayList<String> CNumber = new ArrayList<String>();
     private Context mContext;
 
-    public RecyclerViewAdapter(ArrayList<String> CNames, Context mContext) {
+    public RecyclerViewAdapter(ArrayList<String> CNames,ArrayList<String> CNumber, Context mContext) {
+        this.CNumber = CNumber;
         this.CNames = CNames;
         this.mContext = mContext;
 
@@ -42,6 +45,13 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 Log.d("onBind", "onClick: "+ CNames.get(i));
                 Toast.makeText(mContext, "Clicked on: "+CNames.get(i), Toast.LENGTH_SHORT).show();
                 //add functionality for the click on the company name here >>>
+                // intent to open activity: nodearcgraph
+                Intent intent = new Intent(mContext, NodeArcGraph.class);
+                //putExtra to attach the data to be sent over to the other activity
+                intent.putExtra("compName", CNames.get(i));
+                intent.putExtra("compNumber", CNumber.get(i));
+                mContext.startActivity(intent);
+
             }
         });
 

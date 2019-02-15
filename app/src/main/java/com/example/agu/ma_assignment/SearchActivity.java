@@ -26,6 +26,7 @@ import java.util.Map;
 public class SearchActivity extends AppCompatActivity {
 
     public ArrayList<String> CompanyNames = new ArrayList<String>();
+    public ArrayList<String> CompanyNumber = new ArrayList<String>();
     public EditText userSearch;
 
     //vars for recycler
@@ -58,12 +59,12 @@ public class SearchActivity extends AppCompatActivity {
                             for(int i=0;i<arr.length();i++) {
                                 JSONObject o = arr.getJSONObject(i);
                                 String name = (o.getString("title")).toString(); //get company name
-                                //String number = (o.getString("company_number")).toString(); // get company number
+                                String number = (o.getString("company_number")).toString(); // get company number
                                 //String address = (o.getString("address_snippet")).toString(); // get company address in one line
                                 CompanyNames.add(i, name); //add name of the company to the array
+                                CompanyNumber.add(i, number); //add number of the company to the array
+
                             }
-                            Log.i("compname", "onResponse: "+CompanyNames.toString());
-                            //initRecycler();
                         }
                         catch (Exception e) {  //if the response generates an exception, print it with printStackTrace()
                             e.printStackTrace();
@@ -91,8 +92,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void initRecycler(){
+        //create recycler to execute and set adapter + layoutmanager for it
         RecyclerView recyclerView = findViewById(R.id.recycler_display);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(CompanyNames,this);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(CompanyNames,CompanyNumber,this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

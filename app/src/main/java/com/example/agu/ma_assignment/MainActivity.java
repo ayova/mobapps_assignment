@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //temporary button
     public void NodeOpen(View view) {
         Intent intent = new Intent(this, NodeArcGraph.class);
         startActivity(intent);
