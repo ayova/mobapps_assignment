@@ -14,6 +14,8 @@ public class NodeArcGenerator extends View {
     private float x;
     private float y;
 
+
+
     public NodeArcGenerator(Context context) {
         super(context);
         this.x = 0;

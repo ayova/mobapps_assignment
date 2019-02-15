@@ -20,6 +20,8 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     private ArrayList<String> CNames = new ArrayList<String>();
     private ArrayList<String> CNumber = new ArrayList<String>();
     private Context mContext;
+    private SearchActivity search;
+
 
     public RecyclerViewAdapter(ArrayList<String> CNames,ArrayList<String> CNumber, Context mContext) {
         this.CNumber = CNumber;
@@ -44,13 +46,17 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
             public void onClick(View v) {
                 Log.d("onBind", "onClick: "+ CNames.get(i));
                 Toast.makeText(mContext, "Clicked on: "+CNames.get(i), Toast.LENGTH_SHORT).show();
-                //add functionality for the click on the company name here >>>
+                //search basic info of the company clicked on
+//                String searchURL = "https://api.companieshouse.gov.uk/company/"+CNumber.get(i)+"/officers?register_type=directors";
+//                search.api_search_all(v, searchURL);
+
                 // intent to open activity: nodearcgraph
                 Intent intent = new Intent(mContext, NodeArcGraph.class);
                 //putExtra to attach the data to be sent over to the other activity
                 intent.putExtra("compName", CNames.get(i));
                 intent.putExtra("compNumber", CNumber.get(i));
                 mContext.startActivity(intent);
+
 
             }
         });
