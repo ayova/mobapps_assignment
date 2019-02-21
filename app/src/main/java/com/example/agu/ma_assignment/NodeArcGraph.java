@@ -1,7 +1,9 @@
 package com.example.agu.ma_assignment;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -10,6 +12,7 @@ import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -25,6 +28,17 @@ public class NodeArcGraph extends AppCompatActivity {
         v = new NodeArcGenerator(this);
         setContentView(v);
         getIntentData();
+
+        // Set back button in title bar
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    // function to go back to previous activity using intent
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(getApplicationContext(), SearchActivity.class);
+        startActivityForResult(myIntent, 0);
+        return true;
     }
 
     private void getIntentData(){

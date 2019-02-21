@@ -51,8 +51,8 @@
       <file leaf-file-name="RecyclerViewAdapter.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/RecyclerViewAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="49" selection-start-line="49" selection-start-column="2" selection-end-line="50" selection-end-column="54" />
+            <state relative-caret-position="353">
+              <caret line="38" selection-start-line="38" selection-end-line="38" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -60,15 +60,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SearchActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SearchActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/SearchActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="393">
-              <caret line="75" column="91" selection-start-line="75" selection-start-column="91" selection-end-line="75" selection-end-column="91" />
-              <folding>
-                <element signature="e#837#845#0" expanded="true" />
-                <element signature="e#910#918#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="295">
+              <caret line="48" column="66" selection-start-line="48" selection-start-column="66" selection-end-line="48" selection-end-column="66" />
             </state>
           </provider>
         </entry>
@@ -76,11 +72,29 @@
       <file leaf-file-name="NodeArcGenerator.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-321">
-              <caret line="16" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="387">
+              <caret line="54" column="63" selection-start-line="54" selection-start-column="63" selection-end-line="54" selection-end-column="63" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="NodeArcGraph.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGraph.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="374">
+              <caret line="36" selection-start-line="36" selection-end-line="36" selection-end-column="60" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Node.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/Node.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="221">
+              <caret line="14" column="22" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -2379,11 +2393,11 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeGraph.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_node_arc_graph.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/Node.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGraph.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/Node.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGenerator.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/RecyclerViewAdapter.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGraph.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/SearchActivity.java" />
       </list>
     </option>
@@ -2398,7 +2412,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
           <expand>
@@ -2433,11 +2446,12 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://F:/MobileApps/mobapps_assignment/app/src/main/java/com/example/agu/ma_assignment/NodeArcGraph.java" />
+    <property name="SearchEverywhereHistoryKey" value="drawCir&#9;PSI&#9;JAVA://android.graphics.Canvas#drawCircle&#10;drawRec&#9;PSI&#9;JAVA://sun.java2d.loops.DrawRect&#10;Rect.java&#9;FILE&#9;file://C:/Users/Agu/AppData/Local/Android/Sdk/sources/android-28/android/graphics/Rect.java" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="device.picker.selection" value="390cb8d0" />
     <property name="last_opened_file_path" value="$USER_HOME$/Desktop/android-RecyclerView-master" />
@@ -2596,11 +2610,11 @@
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4993573" weight="0.3293011" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.3293011" />
-      <window_info active="true" anchor="bottom" id="Logcat" order="10" sideWeight="0.49871466" visible="true" weight="0.35752687" />
+      <window_info anchor="bottom" id="Logcat" order="10" sideWeight="0.49871466" weight="0.35752687" />
       <window_info id="Captures" order="4" weight="0.25" />
       <window_info id="Capture Tool" order="6" />
       <window_info id="Designer" order="2" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2159383" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2159383" />
       <window_info anchor="bottom" id="Build" order="7" sideWeight="0.49871466" weight="0.3293011" />
       <window_info anchor="right" id="Gradle" order="6" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -2630,23 +2644,23 @@
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5012854" side_tool="true" weight="0.3293011" />
+      <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.5012854" side_tool="true" weight="0.55241936" />
       <window_info anchor="right" id="Preview" order="4" weight="0.32969153" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3293011" />
       <window_info anchor="right" id="Device File Explorer" order="5" side_tool="true" />
-      <window_info anchor="bottom" id="Logcat" order="10" sideWeight="0.4993573" weight="0.3293011" />
+      <window_info active="true" anchor="bottom" id="Logcat" order="10" sideWeight="0.49871466" visible="true" weight="0.35752687" />
       <window_info anchor="bottom" id="Version Control" order="9" />
       <window_info anchor="bottom" id="Terminal" order="11" weight="0.3293011" />
       <window_info anchor="right" id="Gradle" order="6" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2159383" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.3293011" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info anchor="right" id="Theme Preview" order="7" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39919356" />
     </layout-to-restore>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -2654,28 +2668,18 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="7" />
+      <option name="time" value="9" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/recycler_layout_display.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" selection-start-line="7" selection-end-line="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="14" column="33" selection-start-line="14" selection-start-column="33" selection-end-line="14" selection-end-column="33" />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/MainActivity.java">
@@ -2711,13 +2715,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1360">
           <caret line="80" column="54" selection-start-line="80" selection-start-column="54" selection-end-line="80" selection-end-column="54" />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/MainActivity.java">
@@ -2728,13 +2732,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1275">
           <caret line="75" column="37" selection-start-line="75" selection-start-column="37" selection-end-line="75" selection-end-column="37" />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/RecyclerActivity.java" />
@@ -2827,24 +2831,17 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/recycler_layout_display.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" selection-start-line="7" selection-end-line="7" />
         </state>
       </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeGraphActivity.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_node_graph.xml" />
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/graphics/Rect.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="41" column="19" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/widget/Toast.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-17">
@@ -2855,13 +2852,13 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/node_graph.xml" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeGraph.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="357">
           <caret line="21" column="34" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
@@ -2872,33 +2869,6 @@
       </provider>
       <provider editor-type-id="android-manifest">
         <state />
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/graphics/Canvas.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="1598" column="16" selection-start-line="1598" selection-start-column="16" selection-end-line="1598" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/Node.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_node_arc_graph.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" selection-start-line="9" selection-end-line="13" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/MainActivity.java">
@@ -2912,30 +2882,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_search.xml">
-      <provider editor-type-id="android-designer2">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="22" column="40" selection-start-line="22" selection-start-column="40" selection-end-line="22" selection-end-column="40" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGraph.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="32" column="89" selection-start-line="32" selection-start-column="89" selection-end-line="32" selection-end-column="89" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-321">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
+      <provider editor-type-id="android-designer2">
+        <state />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/system/Os.java">
@@ -2949,9 +2902,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="139">
           <caret line="549" selection-start-line="549" selection-end-line="549" />
-          <folding>
-            <element signature="e#17936#17937#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2966,10 +2916,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
           <caret line="417" selection-start-line="417" selection-end-line="417" />
-          <folding>
-            <element signature="e#17418#17419#0" expanded="true" />
-            <element signature="e#17456#17457#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2994,10 +2940,58 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/Node.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="14" column="22" selection-start-line="14" selection-start-column="22" selection-end-line="14" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/graphics/Rect.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3587">
+          <caret line="41" column="19" selection-start-line="41" selection-start-column="19" selection-end-line="41" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/jre/jre/lib/rt.jar!/sun/java2d/loops/DrawRect.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/Sdk/sources/android-28/android/graphics/Canvas.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="1599" column="19" selection-start-line="1599" selection-start-column="19" selection-end-line="1599" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_node_arc_graph.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" selection-start-line="9" selection-end-line="13" />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer2">
+        <state />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/RecyclerViewAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="49" selection-start-line="49" selection-start-column="2" selection-end-line="50" selection-end-column="54" />
+        <state relative-caret-position="353">
+          <caret line="38" selection-start-line="38" selection-end-line="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="54" column="63" selection-start-line="54" selection-start-column="63" selection-end-line="54" selection-end-column="63" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -3006,12 +3000,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/SearchActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="75" column="91" selection-start-line="75" selection-start-column="91" selection-end-line="75" selection-end-column="91" />
-          <folding>
-            <element signature="e#837#845#0" expanded="true" />
-            <element signature="e#910#918#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="295">
+          <caret line="48" column="66" selection-start-line="48" selection-start-column="66" selection-end-line="48" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/agu/ma_assignment/NodeArcGraph.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="36" selection-start-line="36" selection-end-line="36" selection-end-column="60" />
         </state>
       </provider>
     </entry>

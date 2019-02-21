@@ -1,10 +1,13 @@
 package com.example.agu.ma_assignment;
 
+import android.app.ActionBar;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -30,14 +33,32 @@ public class SearchActivity extends AppCompatActivity {
     public EditText userSearch;
     public String searchURL;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         userSearch = findViewById(R.id.et_user_search);
         initRecycler();
+
+
+        //in case null pointer produced:
+        try{
+            //display back button in title bar
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        catch (Exception e){
+            Log.e("BackButtonError", "Title bar back button: ",e );
+        }
     }
 
+    // function to go back to previous activity using intent
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivityForResult(myIntent, 0);
+        return true;
+    }
 
     // Function used to retrieve all company names that suit the search
     public void api_search_all(View view, String searchURL, final String type){
@@ -62,6 +83,7 @@ public class SearchActivity extends AppCompatActivity {
                                     //String address = (o.getString("address_snippet")).toString(); // get company address in one line
                                     CompanyNames.add(i, name); //add name of the company to the array
                                     CompanyNumber.add(i, number); //add number of the company to the array
+                                    initRecycler();
 
                                 }
                             }
@@ -113,7 +135,6 @@ public class SearchActivity extends AppCompatActivity {
         try{
             searchURL = "https://api.companieshouse.gov.uk/search/companies?q=" + userSearch.getText().toString();
             api_search_all(view, searchURL, "search_companies");
-            initRecycler();
         }
         catch (Exception e){
             Log.e("Error", "searchComp: " + e.getMessage());

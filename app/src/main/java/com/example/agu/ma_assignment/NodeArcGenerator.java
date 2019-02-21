@@ -13,6 +13,7 @@ public class NodeArcGenerator extends View {
 
     private float x;
     private float y;
+    private Node company;
 
 
 
@@ -25,20 +26,13 @@ public class NodeArcGenerator extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        Rect mrec = new Rect();
-        mrec.set(0,0,canvas.getWidth(),canvas.getHeight());
-
-        Paint bgCol = new Paint();
-        bgCol.setColor(Color.GREEN);
-        bgCol.setStyle(Paint.Style.FILL);
-
-        canvas.drawRect(mrec,bgCol);
-
+        float canvx, canvy;
+        canvx = getWidth()/2;
+        canvy = getHeight()/2;
         //draw company node in the middle
-        canvas.translate(getWidth()/2,getHeight()/2);
+        canvas.translate(canvx,canvy);
         Paint cir = new Paint();
-        Node circle = new Node(getWidth(),getHeight(),50);
+        company = new Node(canvx,canvy);
         cir.setColor(Color.BLUE);
         canvas.drawCircle(0,0,50,cir);
     }
@@ -46,11 +40,26 @@ public class NodeArcGenerator extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
-        if(event.getAction()==MotionEvent.ACTION_DOWN){
-            this.x = event.getX();
-            this.y = event.getY();
-            Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
+
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN: // tap
+                this.x = event.getX();
+                this.y = event.getY();
+                Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
+                invalidate();
+                break;
+            case MotionEvent.ACTION_MOVE: // drag
+                this.x = event.getX();
+                this.y = event.getY();
+                if(this.x == company.nodeGetX() && this.y == company.nodeGetY()){
+                    Log.d("WOORKSSSS", "onTouchEvent: DRAGGGGGG ");
+                }
+                Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
+                invalidate();
+                break;
         }
+
+
         this.postInvalidate();
         return true;
     }
