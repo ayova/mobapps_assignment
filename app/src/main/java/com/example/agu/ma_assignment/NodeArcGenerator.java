@@ -9,13 +9,14 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class NodeArcGenerator extends View {
 
     private float x;
     private float y;
+    private ArrayList<Node> Nodes = new ArrayList<>();
     private Node company;
-
-
 
     public NodeArcGenerator(Context context) {
         super(context);
@@ -26,15 +27,18 @@ public class NodeArcGenerator extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        float canvx, canvy;
-        canvx = getWidth()/2;
-        canvy = getHeight()/2;
-        //draw company node in the middle
-        canvas.translate(canvx,canvy);
-        Paint cir = new Paint();
-        company = new Node(canvx,canvy);
-        cir.setColor(Color.BLUE);
-        canvas.drawCircle(0,0,50,cir);
+
+        Paint generic = new Paint();
+        generic.setColor(Color.RED);
+        Node company = new Node(0,120);
+        canvas.drawCircle(company.nodeGetX(),company.nodeGetY(),50, generic);
+
+        company.nodeSetY(getWidth()/2);
+        company.drawNode(canvas,company);
+        company.nodeSetX(getHeight()/5);
+        company.drawNode(canvas,company);
+
+
     }
 
     @Override
@@ -51,9 +55,6 @@ public class NodeArcGenerator extends View {
             case MotionEvent.ACTION_MOVE: // drag
                 this.x = event.getX();
                 this.y = event.getY();
-                if(this.x == company.nodeGetX() && this.y == company.nodeGetY()){
-                    Log.d("WOORKSSSS", "onTouchEvent: DRAGGGGGG ");
-                }
                 Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
                 invalidate();
                 break;
