@@ -16,7 +16,8 @@ public class NodeArcGenerator extends View {
     private float x;
     private float y;
     private ArrayList<Node> Nodes = new ArrayList<>();
-    private Node company;
+    private Node company = new Node(500,500);
+    private Canvas mCanvas;
 
     public NodeArcGenerator(Context context) {
         super(context);
@@ -28,17 +29,14 @@ public class NodeArcGenerator extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        mCanvas = canvas;
         Paint generic = new Paint();
         generic.setColor(Color.RED);
-        Node company = new Node(0,120);
-        canvas.drawCircle(company.nodeGetX(),company.nodeGetY(),50, generic);
-
-        company.nodeSetY(getWidth()/2);
+        //company node in the middle
+        company.nodeGetX();
+        company.nodeGetY();
         company.drawNode(canvas,company);
-        company.nodeSetX(getHeight()/5);
-        company.drawNode(canvas,company);
-
-
+        Log.i("node position", "onDraw: " + " x: "+company.nodeGetX() + " y: " + company.nodeGetY());
     }
 
     @Override
@@ -56,6 +54,9 @@ public class NodeArcGenerator extends View {
                 this.x = event.getX();
                 this.y = event.getY();
                 Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
+                company.nodeSetX(event.getX());
+                company.nodeSetY(event.getY());
+                company.drawNode(mCanvas, company);
                 invalidate();
                 break;
         }
