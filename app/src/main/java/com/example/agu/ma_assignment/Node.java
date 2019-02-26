@@ -3,16 +3,17 @@ package com.example.agu.ma_assignment;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-
-import static android.graphics.Color.RED;
+import android.util.Log;
 
 public class Node extends Canvas {
 
     private float x=0;
     private float y=0;
-    public Node(float x, float y) {
+    private int radius;
+    public Node(float x, float y, int radius) {
         this.x = x;
         this.y = y;
+        this.radius = radius;
     }
 
     public float nodeGetX(){
@@ -29,10 +30,27 @@ public class Node extends Canvas {
         this.y = y;
     }
 
+    public int getNodeRadius(Node node){return this.radius;}
+
     public void drawNode(Canvas canvas, Node node){
         Paint generic = new Paint();
         generic.setColor(Color.RED);
         canvas.drawCircle(node.nodeGetX(),node.nodeGetY(),50, generic);
+    }
 
+    public float[] getNodeArea(Node node){
+        Node nodeIn = node;
+        //calculate the borders where to register the clicks
+        float left = node.nodeGetX() - node.getNodeRadius(node);
+        float top = node.nodeGetY() - node.getNodeRadius(node);
+        float right = node.nodeGetX() + node.getNodeRadius(node);
+        float bottom = node.nodeGetY() + node.getNodeRadius(node);
+        Log.i("Area: ", "getNodeArea: "+left+" "+top+" "+right+" "+bottom);
+        //save them in the array to be returned
+        float[] pos;
+        // [0] - left, [1] - top, [2] - right, [3] - bottom
+        pos = new float[]{left,top,right,bottom};
+        //return the array to be used for click detection
+        return  pos;
     }
 }
