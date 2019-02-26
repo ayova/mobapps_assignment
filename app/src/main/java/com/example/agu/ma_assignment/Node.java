@@ -39,13 +39,12 @@ public class Node extends Canvas {
     }
 
     public float[] getNodeArea(Node node){
-        Node nodeIn = node;
         //calculate the borders where to register the clicks
         float left = node.nodeGetX() - node.getNodeRadius(node);
         float top = node.nodeGetY() - node.getNodeRadius(node);
         float right = node.nodeGetX() + node.getNodeRadius(node);
         float bottom = node.nodeGetY() + node.getNodeRadius(node);
-        Log.i("Area: ", "getNodeArea: "+left+" "+top+" "+right+" "+bottom);
+        //Log.i("Area: ", "getNodeArea: "+left+" "+top+" "+right+" "+bottom);
         //save them in the array to be returned
         float[] pos;
         // [0] - left, [1] - top, [2] - right, [3] - bottom

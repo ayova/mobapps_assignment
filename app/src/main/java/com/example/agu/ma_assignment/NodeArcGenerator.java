@@ -37,7 +37,7 @@ public class NodeArcGenerator extends View {
         company.nodeGetX();
         company.nodeGetY();
         company.drawNode(canvas,company);
-        Log.i("node position", "onDraw: " + " x: "+company.nodeGetX() + " y: " + company.nodeGetY());
+        //Log.i("node position", "onDraw: " + " x: "+company.nodeGetX() + " y: " + company.nodeGetY());
         company.getNodeArea(company);
     }
 
@@ -59,7 +59,7 @@ public class NodeArcGenerator extends View {
             case MotionEvent.ACTION_DOWN: // tap
                 this.x = event.getX();
                 this.y = event.getY();
-                Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
+                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
                 if(nodeClicked(company)){
                     Toast.makeText(this.getContext(), "Node clicked", Toast.LENGTH_SHORT).show();
                 }

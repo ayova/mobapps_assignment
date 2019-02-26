@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -29,20 +30,23 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.security.auth.login.LoginException;
 
 public class NodeArcGraph extends AppCompatActivity {
 
     NodeArcGenerator v;
     private String CName;
-    private int Cnumber;
+    private String Cnumber;
 
-    private ArrayList<String> officerName = new ArrayList<>();
-    private ArrayList<String> officerDoB = new ArrayList<>();
-    private ArrayList<String> officerNat = new ArrayList<>();
-    private ArrayList<String> officerAddress = new ArrayList<>();
+//    private ArrayList<String> officerName = new ArrayList<>();
+//    private ArrayList<String> officerDoB = new ArrayList<>();
+//    private ArrayList<String> officerNat = new ArrayList<>();
+//    private ArrayList<String> officerAddress = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,7 @@ public class NodeArcGraph extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //get officers
-        api_search_officers(v);
+        //api_search_officers(v);
 
     }
 
@@ -72,7 +76,7 @@ public class NodeArcGraph extends AppCompatActivity {
     private void getIntentData(){
         if(getIntent().hasExtra("compName") && getIntent().hasExtra("compNumber")){
             CName = getIntent().getStringExtra("compName");
-            Cnumber = Integer.parseInt(getIntent().getStringExtra("compNumber"));
+            Cnumber = getIntent().getStringExtra("compNumber");
             Log.i("CompData", "Name; "+ CName + " Number; " + Cnumber);
 
         }
@@ -81,94 +85,104 @@ public class NodeArcGraph extends AppCompatActivity {
         }
     }
 
-    private void api_search_officers(View view){
-        //Create request queue
-        RequestQueue rQueue = Volley.newRequestQueue(this);
-        //JSONRequest
-        //search url for company names
-        String searchURL = "https://api.companieshouse.gov.uk/company/" + Cnumber + "/officers?register_type=directors";
-        JsonObjectRequest JSONretriever = new JsonObjectRequest(Request.Method.GET, searchURL, null,
-                new Response.Listener < JSONObject > () {
-                    @Override
-                    public void onResponse(JSONObject response) { //what to do with the response from the API
-
-                        try {
-                            JSONArray arr = response.getJSONArray("items");
-                            for (int i = 0; i < arr.length(); i++) {
-                                JSONObject o = arr.getJSONObject(i);
-                                //add officer data to relevant array
-                                String name = o.getString("name");
-                                officerName.add(name);
-                                Log.i("logging data", "onResponse: " + name);
-
-                                //officer's nationality
-                                String nationality;
-                                if(!o.has("nationality")){
-                                    nationality = "Unavailable";
-                                    officerNat.add(nationality);
-                                }
-                                else{
-                                    nationality = o.getString("nationality");
-                                    officerNat.add(nationality);
-                                }
-                                Log.i("logging data", "onResponse: " + nationality);
-
-                                //officer's year of birth
-                                JSONObject dob = o.getJSONObject("date_of_birth");
-                                String yr;
-                                if(!dob.has("year")){
-                                    yr = "Unavailable";
-                                    officerDoB.add(yr);
-                                }
-                                else {
-                                    yr = dob.getString("year");
-                                    officerDoB.add(yr);
-                                }
-                                Log.i("logging data", "onResponse: " + yr);
-
-                                //officer's address
-                                JSONObject addr = o.getJSONObject("address");
-                                String postCode, cty, stNo, street, ctry, ofAddress;
-                                if(!addr.has("postal_code") || !addr.has("locality") || !addr.has("premises") || !addr.has("address_line_1") || !addr.has("country")){
-                                    ofAddress = "Unavailable";
-                                    officerAddress.add(ofAddress);
-
-                                }
-                                else {
-                                    postCode = addr.getString("postal_code");
-                                    cty = addr.getString("locality");
-                                    stNo = addr.getString("premises");
-                                    street = addr.getString("address_line_1");
-                                    ctry = addr.getString("country");
-                                    ofAddress = stNo + " " + street + ", " + cty + ", " + postCode + ". " + ctry;
-                                    officerAddress.add(ofAddress);
-                                }
-                                Log.i("logging data", "onResponse: " + ofAddress);
-                            }
-                        } catch (Exception e) { //if the response generates an exception, print it with printStackTrace()
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() { // if anything goes wrong... Print error to log
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        NetworkResponse networkResponse = error.networkResponse;
-                        Log.e("JSON", "JSON error: " + networkResponse.statusCode);
-                        //                        if (networkResponse != null && networkResponse.statusCode == HttpStatus.SC_UNAUTHORIZED) {
-//                            // HTTP Status Code: 401 Unauthorized
+//    private void api_search_officers(View view){
+//        //Create request queue
+//        RequestQueue rQueue = Volley.newRequestQueue(this);
+//        //JSONRequest
+//        //search url for company names
+//        final String searchURL = "https://api.companieshouse.gov.uk/company/" + Cnumber + "/officers?register_type=directors";
+//        JsonObjectRequest JSONretriever = new JsonObjectRequest(Request.Method.GET, searchURL, null,
+//                new Response.Listener < JSONObject > () {
+//                    @Override
+//                    public void onResponse(JSONObject response) { //what to do with the response from the API
+//
+//                        try {
+//                            if(response.getJSONArray("items").length() == 0){
+//                                Toast.makeText(NodeArcGraph.this, "No officers available for this company.", Toast.LENGTH_SHORT).show();
+//                            }
+//                            JSONArray arr = response.getJSONArray("items");
+//
+//                            for (int i = 0; i < arr.length(); i++) {
+//                                JSONObject o = arr.getJSONObject(i);
+//                                //add officer data to relevant array
+//                                String name = o.getString("name");
+//                                officerName.add(name);
+//                                Log.i("logging data", "onResponse: " + name);
+//
+//                                //officer's nationality
+//                                String nationality;
+//                                if(!o.has("nationality")){
+//                                    nationality = "Unavailable";
+//                                    officerNat.add(nationality);
+//                                }
+//                                else{
+//                                    nationality = o.getString("nationality");
+//                                    officerNat.add(nationality);
+//                                }
+//                                Log.i("logging data", "onResponse: " + nationality);
+//
+//                                //officer's year of birth
+//                                JSONObject dob = o.getJSONObject("date_of_birth");
+//                                String yr;
+//                                if(!dob.has("year")){
+//                                    yr = "Unavailable";
+//                                    officerDoB.add(yr);
+//                                }
+//                                else {
+//                                    yr = dob.getString("year");
+//                                    officerDoB.add(yr);
+//                                }
+//                                Log.i("logging data", "onResponse: " + yr);
+//
+//                                //officer's address
+//                                JSONObject addr = o.getJSONObject("address");
+//                                String postCode, cty, stNo, street, ctry, ofAddress;
+//                                if(!addr.has("postal_code") || !addr.has("locality") || !addr.has("premises") || !addr.has("address_line_1") || !addr.has("country")){
+//                                    ofAddress = "Unavailable";
+//                                    officerAddress.add(ofAddress);
+//
+//                                }
+//                                else {
+//                                    postCode = addr.getString("postal_code");
+//                                    cty = addr.getString("locality");
+//                                    stNo = addr.getString("premises");
+//                                    street = addr.getString("address_line_1");
+//                                    ctry = addr.getString("country");
+//                                    ofAddress = stNo + " " + street + ", " + cty + ", " + postCode + ". " + ctry;
+//                                    officerAddress.add(ofAddress);
+//                                }
+//
+//                                for(int j=0; j< officerName.size(); j++){
+//                                    Log.i("Officer "+j, "Details: "+officerName.get(j)+" ,"+officerDoB.get(j)+" ,"+officerNat.get(j)+" ,"+officerAddress.get(j));
+//                                }
+//
+//                            }
+//                        } catch (Exception e) { //if the response generates an exception
+//                            Log.e("Response exception", "onResponse: ",e );
+//                            e.printStackTrace();
 //                        }
-                    }
-                }) {
-            @Override
-            public Map< String, String > getHeaders() throws AuthFailureError { // set the header for authentication (aka send API key)
-                HashMap headers = new HashMap();
-                headers.put("Authorization", "sic7yu4YhmpLToiLXPT7bGS_QvXW8SjIPLuhIfoF");
-                return headers;
-            }
-        };
-        //Finally, add the request to the request queue
-        rQueue.add(JSONretriever);
-    }
+//                    }
+//                },
+//                new Response.ErrorListener() { // if anything goes wrong... Print error to log
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        NetworkResponse networkResponse = error.networkResponse;
+//                        String code = networkResponse.toString();
+//                        if(code == "404"){
+//                            Log.e("JSON", "JSON error: " + networkResponse.statusCode);
+//                            Toast.makeText(NodeArcGraph.this, "No officers available", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                }) {
+//            @Override
+//            public Map< String, String > getHeaders() throws AuthFailureError { // set the header for authentication (aka send API key)
+//                HashMap headers = new HashMap();
+//                headers.put("Authorization", "sic7yu4YhmpLToiLXPT7bGS_QvXW8SjIPLuhIfoF");
+//                return headers;
+//            }
+//        };
+//        //Finally, add the request to the request queue
+//        rQueue.add(JSONretriever);
+//    }
 
 }
