@@ -3,6 +3,7 @@ package com.example.agu.ma_assignment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -39,6 +40,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
 
     private String CName;
     private String Cnumber;
+    private Intent intent;
 
     private ArrayList<String> officerName = new ArrayList<>();
     private ArrayList<String> officerDoB = new ArrayList<>();
@@ -72,16 +74,14 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 Log.d("onBind", "onClick: "+ CNames.get(i));
                 //Toast.makeText(mContext, "Clicked on: "+CNames.get(i), Toast.LENGTH_SHORT).show(); // debugging only
 
-                api_search_officers(v, CNumber.get(i));
 
                 // intent to open activity: nodearcgraph
-                Intent intent = new Intent(mContext, NodeArcGraph.class);
+                intent = new Intent(mContext, NodeArcGraph.class);
                 //putExtra to attach the data to be sent over to the other activity
                 intent.putExtra("compName", CNames.get(i));
                 intent.putExtra("compNumber", CNumber.get(i));
-                mContext.startActivity(intent);
-
-
+                api_search_officers(v, CNumber.get(i)); //gets right information but doesnt save to local variables (ArrayList<String>)
+                 mContext.startActivity(intent);
             }
         });
 
@@ -119,7 +119,6 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 new Response.Listener <JSONObject> () {
                     @Override
                     public void onResponse(JSONObject response) { //what to do with the response from the API
-
                         try {
                             if(response.getJSONArray("items").length() == 0){
                                 Toast.makeText(RecyclerViewAdapter.this.mContext, "No officers available for this company.", Toast.LENGTH_SHORT).show();
@@ -129,8 +128,13 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                 JSONObject o = arr.getJSONObject(i);
                                 //add officer data to relevant array
                                 String name = o.getString("name");
-                                officerName.add(name);
-                                Log.i("logging data", "onResponse: " + name);
+                                //refactor when room database implemented
+                                try{
+                                    RecyclerViewAdapter.this.officerName.add(i, name);
+                                }catch (Exception e){
+                                    Log.e("add exception", "onResponse: ",e );
+                                }
+                                Log.i("logging data", "onResponse: " + officerName.get(i));
 
                                 //officer's nationality
                                 String nationality;
@@ -175,10 +179,6 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                     officerAddress.add(ofAddress);
                                 }
 
-                                for(int j=0; j< officerName.size(); j++){
-                                    Log.i("Officer "+j, "Details: "+officerName.get(j)+" ,"+officerDoB.get(j)+" ,"+officerNat.get(j)+" ,"+officerAddress.get(j));
-                                }
-
                             }
                         } catch (Exception e) { //if the response generates an exception
                             Log.e("Response exception", "onResponse: ",e );
@@ -191,7 +191,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                     public void onErrorResponse(VolleyError error) {
                         NetworkResponse networkResponse = error.networkResponse;
                         String code = networkResponse.toString();
-                        if(code == "404"){
+                        if(code == "404" || code == "400" || code == "401"){
                             Log.e("JSON", "JSON error: " + networkResponse.statusCode);
                             Toast.makeText(RecyclerViewAdapter.this.mContext, "No officers available", Toast.LENGTH_SHORT).show();
                         }
@@ -207,5 +207,4 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
         //Finally, add the request to the request queue
         rQueue.add(JSONretriever);
     }
-
 }

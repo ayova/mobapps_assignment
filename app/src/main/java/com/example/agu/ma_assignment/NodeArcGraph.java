@@ -43,10 +43,10 @@ public class NodeArcGraph extends AppCompatActivity {
     private String CName;
     private String Cnumber;
 
-//    private ArrayList<String> officerName = new ArrayList<>();
-//    private ArrayList<String> officerDoB = new ArrayList<>();
-//    private ArrayList<String> officerNat = new ArrayList<>();
-//    private ArrayList<String> officerAddress = new ArrayList<>();
+    private ArrayList<String> officerName = new ArrayList<>();
+    private ArrayList<String> officerDoB = new ArrayList<>();
+    private ArrayList<String> officerNat = new ArrayList<>();
+    private ArrayList<String> officerAddress = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,8 +62,27 @@ public class NodeArcGraph extends AppCompatActivity {
         //get officers
         //api_search_officers(v);
 
+        //getOfficers();
     }
 
+    public void getOfficers(){
+//        Bundle recBundle = new Bundle(); //bundle that receives the data
+//        officerName = recBundle.getStringArrayList("offName");
+//        for(int i=0; i < officerName.size() ; i++)//for testing purposes
+//        {
+//            Log.d("MSG_PASSED=>", "getOfficers: "+officerName.get(i));
+//        }
+
+//        Intent myIntent = getIntent();
+//        if(myIntent != null)
+//        {
+//            officerName = myIntent.getStringArrayListExtra("offName");
+//            for(int i=0; i < officerName.size() ; i++)//for testing purposes
+//            {
+//            Log.d("MSG_PASSED=>", "getOfficers: "+officerName.get(i));
+//            }
+//        }
+    }
 
     // function to go back to previous activity using intent
     public boolean onOptionsItemSelected(MenuItem item){
@@ -77,8 +96,14 @@ public class NodeArcGraph extends AppCompatActivity {
         if(getIntent().hasExtra("compName") && getIntent().hasExtra("compNumber")){
             CName = getIntent().getStringExtra("compName");
             Cnumber = getIntent().getStringExtra("compNumber");
+            //Bundle gBundle = getIntent().getBundleExtra("myBundle");
+            //officerName = gBundle.getStringArrayList("offName");
+            officerName = getIntent().getStringArrayListExtra("offName");
+            for(int i=0; i < officerName.size() ; i++)//for testing purposes
+            {
+                Log.d("MSG_PASSED=>", "getOfficers: "+officerName.get(i));
+            }
             Log.i("CompData", "Name; "+ CName + " Number; " + Cnumber);
-
         }
         else{
             Log.d("IntentExtras", "getIntentData: EMPTY");
