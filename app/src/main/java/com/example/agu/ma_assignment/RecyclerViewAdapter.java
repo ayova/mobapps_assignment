@@ -33,8 +33,8 @@ import java.util.Map;
 
 public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
     private static final String TAG = "RecyclerViewAdapter";
-    private ArrayList<String> CNames = new ArrayList<String>();
-    private ArrayList<String> CNumber = new ArrayList<String>();
+    private ArrayList<String> CNames;
+    private ArrayList<String> CNumber;
     private Context mContext;
     private SearchActivity search;
 
@@ -42,12 +42,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     private String Cnumber;
     private Intent intent;
 
-    private ArrayList<String> officerName = new ArrayList<>();
-    private ArrayList<String> officerDoB = new ArrayList<>();
-    private ArrayList<String> officerNat = new ArrayList<>();
-    private ArrayList<String> officerAddress = new ArrayList<>();
-
-
+    ArrayList<Officer> officers;
 
     public RecyclerViewAdapter(ArrayList<String> CNames,ArrayList<String> CNumber, Context mContext) {
         this.CNumber = CNumber;
@@ -74,6 +69,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 Log.d("onBind", "onClick: "+ CNames.get(i));
                 //Toast.makeText(mContext, "Clicked on: "+CNames.get(i), Toast.LENGTH_SHORT).show(); // debugging only
 
+                // TODO: 01/03/2019 on click to i(company) save the officers into database (rooms db)
 
                 // intent to open activity: nodearcgraph
                 intent = new Intent(mContext, NodeArcGraph.class);
@@ -81,7 +77,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 intent.putExtra("compName", CNames.get(i));
                 intent.putExtra("compNumber", CNumber.get(i));
                 api_search_officers(v, CNumber.get(i)); //gets right information but doesnt save to local variables (ArrayList<String>)
-                 mContext.startActivity(intent);
+                mContext.startActivity(intent);
             }
         });
 
@@ -126,48 +122,47 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                             JSONArray arr = response.getJSONArray("items");
                             for (int i = 0; i < arr.length(); i++) {
                                 JSONObject o = arr.getJSONObject(i);
-                                //add officer data to relevant array
-                                String name = o.getString("name");
-                                //refactor when room database implemented
-                                try{
-                                    RecyclerViewAdapter.this.officerName.add(i, name);
-                                }catch (Exception e){
-                                    Log.e("add exception", "onResponse: ",e );
-                                }
-                                Log.i("logging data", "onResponse: " + officerName.get(i));
 
-                                //officer's nationality
+                                //temporal string holders
+                                String name;
                                 String nationality;
+                                String ofAddress;
+                                String ofDoB;
+                                String yr, month; //holders that make up ofDoB
+                                String postCode, cty, stNo, street, ctry; //holders that make up ofAddress
+
+                                if(!o.has("name")){
+                                    name = "Unavailable";
+                                }
+                                else{
+                                    name = o.getString("name");
+                                }
+
                                 if(!o.has("nationality")){
                                     nationality = "Unavailable";
-                                    officerNat.add(nationality);
                                 }
                                 else{
                                     nationality = o.getString("nationality");
-                                    officerNat.add(nationality);
                                 }
-                                Log.i("logging data", "onResponse: " + nationality);
 
-                                //officer's year of birth
                                 JSONObject dob = o.getJSONObject("date_of_birth");
-                                String yr;
                                 if(!dob.has("year")){
                                     yr = "Unavailable";
-                                    officerDoB.add(yr);
                                 }
                                 else {
                                     yr = dob.getString("year");
-                                    officerDoB.add(yr);
                                 }
-                                Log.i("logging data", "onResponse: " + yr);
+                                if(!dob.has("month")){
+                                    month = "Unavailable";
+                                }
+                                else {
+                                    month = dob.getString("month");
+                                }
+                                ofDoB = month + " " + yr;
 
-                                //officer's address
                                 JSONObject addr = o.getJSONObject("address");
-                                String postCode, cty, stNo, street, ctry, ofAddress;
                                 if(!addr.has("postal_code") || !addr.has("locality") || !addr.has("premises") || !addr.has("address_line_1") || !addr.has("country")){
                                     ofAddress = "Unavailable";
-                                    officerAddress.add(ofAddress);
-
                                 }
                                 else {
                                     postCode = addr.getString("postal_code");
@@ -176,9 +171,10 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                     street = addr.getString("address_line_1");
                                     ctry = addr.getString("country");
                                     ofAddress = stNo + " " + street + ", " + cty + ", " + postCode + ". " + ctry;
-                                    officerAddress.add(ofAddress);
                                 }
 
+                                //add each officer found to the list of officers
+                                officers.add(new Officer(name,ofAddress,nationality,ofDoB));
                             }
                         } catch (Exception e) { //if the response generates an exception
                             Log.e("Response exception", "onResponse: ",e );

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ma_assignment</string>
+    <string name="app_name">Companies House</string>
     <string name="et_hint_companyName">Type in company name here</string>
     <string name="btn_txt_search">Search</string>
     <string name="search_feature_btn">Search feature</string>

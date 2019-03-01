@@ -7,6 +7,7 @@ import android.util.Log;
 
 public class Node extends Canvas {
 
+    // TODO: 01/03/2019 give nodes id so they are unique and correspond to one officer
     private float x=0;
     private float y=0;
     private int radius;
@@ -30,7 +31,7 @@ public class Node extends Canvas {
         this.y = y;
     }
 
-    public int getNodeRadius(Node node){return this.radius;}
+    public int getNodeRadius(){return this.radius;}
 
     public void drawNode(Canvas canvas, Node node){
         Paint generic = new Paint();
@@ -40,10 +41,10 @@ public class Node extends Canvas {
 
     public float[] getNodeArea(Node node){
         //calculate the borders where to register the clicks
-        float left = node.nodeGetX() - node.getNodeRadius(node);
-        float top = node.nodeGetY() - node.getNodeRadius(node);
-        float right = node.nodeGetX() + node.getNodeRadius(node);
-        float bottom = node.nodeGetY() + node.getNodeRadius(node);
+        float left = node.nodeGetX() - node.getNodeRadius();
+        float top = node.nodeGetY() - node.getNodeRadius();
+        float right = node.nodeGetX() + node.getNodeRadius();
+        float bottom = node.nodeGetY() + node.getNodeRadius();
         //Log.i("Area: ", "getNodeArea: "+left+" "+top+" "+right+" "+bottom);
         //save them in the array to be returned
         float[] pos;

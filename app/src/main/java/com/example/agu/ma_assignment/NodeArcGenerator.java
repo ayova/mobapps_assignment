@@ -1,5 +1,6 @@
 package com.example.agu.ma_assignment;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,18 +20,29 @@ public class NodeArcGenerator extends View {
     private ArrayList<Node> Nodes = new ArrayList<>();
     private Node company = new Node(500,500, 50);
     private Canvas mCanvas;
+    int officerCount;
+    Context context;
 
     public NodeArcGenerator(Context context) {
         super(context);
+        this.context = context;
         this.x = 0;
         this.y = 0;
+    }
+
+    private int getOfCount(){
+        AppDatabase db = Room.databaseBuilder(context,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
+        officerCount = db.officerDao().getOfficerCount();
+        return officerCount;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         mCanvas = canvas;
+
+
+
         Paint generic = new Paint();
         generic.setColor(Color.RED);
         //company node in the middle
@@ -42,6 +54,7 @@ public class NodeArcGenerator extends View {
     }
 
     public boolean nodeClicked(Node node){
+        // TODO: 01/03/2019 when officer clicked, redirect to recycler view that shows the officer's data
         //get the area of the node
         float[] pos = node.getNodeArea(node);
         //check if click was inside boundaries of node
@@ -51,6 +64,20 @@ public class NodeArcGenerator extends View {
         else{ return false;}
     }
 
+    public void drawAroundCompany(){
+        float[] outter = company.getNodeArea(company);
+        int left = (int) outter[0];
+        int top = (int) outter[1];
+        int right = (int) outter[2];
+        int bottom = (int) outter[3];
+
+        int x = left;
+        int y = top+company.getNodeRadius();
+
+        for (int i = 0; i < getOfCount(); i++) {
+//            Node newOfficer = new Node();
+        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
