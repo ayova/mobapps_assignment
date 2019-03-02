@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 public class NodeArcGenerator extends View {
 
+    final String TAG = "NodeArcGen";
     private float x;
     private float y;
     private ArrayList<Node> Nodes = new ArrayList<>();
@@ -32,7 +33,8 @@ public class NodeArcGenerator extends View {
 
     private int getOfCount(){
         AppDatabase db = Room.databaseBuilder(context,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
-        officerCount = db.officerDao().getOfficerCount();
+        officerCount = db.officerDao().getAllOfficers().get(0).getId();
+        Log.d(TAG, "getOfCount: " + officerCount);
         return officerCount;
     }
 

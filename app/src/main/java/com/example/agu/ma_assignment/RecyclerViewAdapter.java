@@ -1,6 +1,7 @@
 package com.example.agu.ma_assignment;
 
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
@@ -42,7 +44,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     private String Cnumber;
     private Intent intent;
 
-    ArrayList<Officer> officers;
+    List<Officer> officers =  new ArrayList<>();
 
     public RecyclerViewAdapter(ArrayList<String> CNames,ArrayList<String> CNumber, Context mContext) {
         this.CNumber = CNumber;
@@ -116,6 +118,9 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                     @Override
                     public void onResponse(JSONObject response) { //what to do with the response from the API
                         try {
+                            //connect with the rooms db
+                            AppDatabase db = Room.databaseBuilder(mContext,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
+
                             if(response.getJSONArray("items").length() == 0){
                                 Toast.makeText(RecyclerViewAdapter.this.mContext, "No officers available for this company.", Toast.LENGTH_SHORT).show();
                             }
@@ -145,20 +150,27 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                     nationality = o.getString("nationality");
                                 }
 
-                                JSONObject dob = o.getJSONObject("date_of_birth");
-                                if(!dob.has("year")){
-                                    yr = "Unavailable";
+                                if(!o.has("date_of_birth")){
+                                    ofDoB = "Unavailable";
                                 }
-                                else {
-                                    yr = dob.getString("year");
+                                else{
+                                    JSONObject dob = o.getJSONObject("date_of_birth");
+
+                                    if(!dob.has("year")){
+                                        yr = "Unavailable";
+                                    }
+                                    else {
+                                        yr = dob.getString("year");
+                                    }
+                                    if(!dob.has("month")){
+                                        month = "Unavailable";
+                                    }
+                                    else {
+                                        month = dob.getString("month");
+                                    }
+                                    ofDoB = month + " " + yr;
                                 }
-                                if(!dob.has("month")){
-                                    month = "Unavailable";
-                                }
-                                else {
-                                    month = dob.getString("month");
-                                }
-                                ofDoB = month + " " + yr;
+
 
                                 JSONObject addr = o.getJSONObject("address");
                                 if(!addr.has("postal_code") || !addr.has("locality") || !addr.has("premises") || !addr.has("address_line_1") || !addr.has("country")){
@@ -172,9 +184,20 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                     ctry = addr.getString("country");
                                     ofAddress = stNo + " " + street + ", " + cty + ", " + postCode + ". " + ctry;
                                 }
+                                Officer insertOffi = new Officer();
+                                insertOffi.setOfficerNationality(nationality);
+                                insertOffi.setOfficerAddress(ofAddress);
+                                insertOffi.setOfficerDoB(ofDoB);
+                                insertOffi.setOfficerName(name);
+                                //insert straight to db
+                                db.officerDao().insertOfficer(insertOffi);
+                            }
 
-                                //add each officer found to the list of officers
-                                officers.add(new Officer(name,ofAddress,nationality,ofDoB));
+                            Log.d(TAG, "onResponse: "+ db.officerDao().getOfficerCount());
+                            for (int i = 0; i < db.officerDao().getOfficerCount(); i++) {
+
+                                Log.d(TAG, "onResponse: "+ db.officerDao().getAllOfficers().get(i).getOfficerName());
+
                             }
                         } catch (Exception e) { //if the response generates an exception
                             Log.e("Response exception", "onResponse: ",e );
@@ -203,4 +226,5 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
         //Finally, add the request to the request queue
         rQueue.add(JSONretriever);
     }
+
 }

@@ -55,7 +55,7 @@ public class NodeArcGraph extends AppCompatActivity {
 
         v = new NodeArcGenerator(this);
         setContentView(v);
-        getIntentData();
+        //getIntentData();
 
         // Set back button in title bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -71,21 +71,21 @@ public class NodeArcGraph extends AppCompatActivity {
     }
 
     // TODO: 01/03/2019: DELETE (AFTER ROOMS DB IMPLEMENTED!!!)
-    private void getIntentData(){
-        if(getIntent().hasExtra("compName") && getIntent().hasExtra("compNumber")){
-            CName = getIntent().getStringExtra("compName");
-            Cnumber = getIntent().getStringExtra("compNumber");
-            //Bundle gBundle = getIntent().getBundleExtra("myBundle");
-            //officerName = gBundle.getStringArrayList("offName");
-            officerName = getIntent().getStringArrayListExtra("offName");
-            for(int i=0; i < officerName.size() ; i++)//for testing purposes
-            {
-                Log.d("MSG_PASSED=>", "getOfficers: "+officerName.get(i));
-            }
-            Log.i("CompData", "Name; "+ CName + " Number; " + Cnumber);
-        }
-        else{
-            Log.d("IntentExtras", "getIntentData: EMPTY");
-        }
-    }
+//    private void getIntentData(){
+//        if(getIntent().hasExtra("compName") && getIntent().hasExtra("compNumber")){
+//            CName = getIntent().getStringExtra("compName");
+//            Cnumber = getIntent().getStringExtra("compNumber");
+//            //Bundle gBundle = getIntent().getBundleExtra("myBundle");
+//            //officerName = gBundle.getStringArrayList("offName");
+//            officerName = getIntent().getStringArrayListExtra("offName");
+//            for(int i=0; i < officerName.size() ; i++)//for testing purposes
+//            {
+//                Log.d("MSG_PASSED=>", "getOfficers: "+officerName.get(i));
+//            }
+//            Log.i("CompData", "Name; "+ CName + " Number; " + Cnumber);
+//        }
+//        else{
+//            Log.d("IntentExtras", "getIntentData: EMPTY");
+//        }
+//    }
 }
