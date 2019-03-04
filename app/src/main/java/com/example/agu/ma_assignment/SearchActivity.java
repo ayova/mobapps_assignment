@@ -1,6 +1,7 @@
 package com.example.agu.ma_assignment;
 
 import android.app.ActionBar;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -119,6 +120,8 @@ public class SearchActivity extends AppCompatActivity {
 
     public void searchComp(View view) {
         try{
+            AppDatabase db = Room.databaseBuilder(this,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
+            db.officerDao().deleteAllOfficers();
             api_search_all(view);
         }
         catch (Exception e){

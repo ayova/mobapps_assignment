@@ -14,6 +14,9 @@ public interface OfficerDao {
     @Query("SELECT * FROM Officer")
     List<Officer> getAllOfficers();
 
+    @Query("DELETE FROM Officer")
+    void deleteAllOfficers();
+
     @Query("SELECT COUNT(id) FROM Officer")
     int getOfficerCount();
 

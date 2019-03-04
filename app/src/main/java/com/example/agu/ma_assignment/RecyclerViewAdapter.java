@@ -78,7 +78,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 //putExtra to attach the data to be sent over to the other activity
                 intent.putExtra("compName", CNames.get(i));
                 intent.putExtra("compNumber", CNumber.get(i));
-                api_search_officers(v, CNumber.get(i)); //gets right information but doesnt save to local variables (ArrayList<String>)
+                api_search_officers(v, CNumber.get(i), CNames.get(i)); //gets right information but doesnt save to local variables (ArrayList<String>)
                 mContext.startActivity(intent);
             }
         });
@@ -105,8 +105,14 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
         }
 
     }
+    private void deleteOldOfficers(){
+        AppDatabase db = Room.databaseBuilder(mContext,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
+        db.officerDao().deleteAllOfficers();
+    }
 
-    private void api_search_officers(View view, String CNumber){
+    private void api_search_officers(View view, String CNumber, final String CName){
+        //first of all delete old officers from the database
+        deleteOldOfficers();
         //Create request queue
         RequestQueue rQueue = Volley.newRequestQueue(this.mContext);
         //JSONRequest
@@ -196,7 +202,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                             Log.d(TAG, "onResponse: "+ db.officerDao().getOfficerCount());
                             for (int i = 0; i < db.officerDao().getOfficerCount(); i++) {
 
-                                Log.d(TAG, "onResponse: "+ db.officerDao().getAllOfficers().get(i).getOfficerName());
+                                Log.d(TAG, "offnamedb: "+ db.officerDao().getAllOfficers().get(i).getOfficerName());
 
                             }
                         } catch (Exception e) { //if the response generates an exception

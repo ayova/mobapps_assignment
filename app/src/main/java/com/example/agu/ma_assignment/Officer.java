@@ -19,6 +19,7 @@ public class Officer {
     @ColumnInfo (name = "officer_dob")
     private String OfficerDoB;
 
+
     public Officer() { /*empty constructor needed*/ }
 
     public Officer(String officerName, String officerAddress, String officerNationality, String officerDoB) {
