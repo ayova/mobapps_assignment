@@ -16,6 +16,11 @@ public class Node extends Canvas {
         this.y = y;
         this.radius = radius;
     }
+    public Node(){
+        this.x = 0;
+        this.y = 0;
+        this.radius = 0;
+    }
 
     public float nodeGetX(){
         return this.x;
@@ -29,6 +34,9 @@ public class Node extends Canvas {
     }
     public void nodeSetY(float y){
         this.y = y;
+    }
+    public void nodeSetRadius(int radius){
+        this.radius = radius;
     }
 
     public int getNodeRadius(){return this.radius;}

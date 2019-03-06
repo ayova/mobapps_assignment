@@ -20,8 +20,9 @@ public class NodeArcGenerator extends View {
     private float x;
     private float y;
     private ArrayList<Node> Nodes = new ArrayList<>();
-    private Node company = new Node(0,0, 50);
     private Canvas mCanvas;
+    private Node company = new Node();
+
     Context context;
     List<Officer> ofNodeLs;
 
@@ -73,34 +74,30 @@ public class NodeArcGenerator extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mCanvas = canvas;
-        //set canvas to the middle of the screen
-        canvas.translate(getWidth()/2,getHeight()/2);
+//        //set canvas to the middle of the screen
+//        canvas.translate(getWidth()/2,getHeight()/2);
         //paint
         Paint generic = new Paint();
         generic.setColor(Color.RED);
 
+        company.nodeSetX(canvas.getWidth()/2);
+        company.nodeSetY(canvas.getHeight()/2);
+        company.nodeSetRadius(50);
         company.drawNode(canvas, company);
         drawOfficers(canvas);
 
     }
 
-    public boolean nodeClicked(MotionEvent event){
-        boolean ret = false;
-        x = event.getX();
-        y = event.getY();
-        //get area for each node
-        for (int i = 0; i < Nodes.size(); i++) {
-            Node node = Nodes.get(i);
-            //get the area of the node
-            float[] pos = node.getNodeArea(node);
-            //check if click was inside boundaries of node
-            if(this.x > pos[0] && this.x < pos[2] && this.y > pos[1] && this.y < pos[3]){
-                ret = true;
+    //check if the click event hits a node on the canvas (i.e. node is pressed)
+    public void nodeClicked(float x, float y){
+        for (int i = 0; i < Nodes.size(); i++) { //get area for each node
+            float[] pos = Nodes.get(i).getNodeArea(Nodes.get(i)); //get the area of the node
+            Log.i(TAG, "nodeClicked: "+x+" "+pos[0]+" "+pos[2]+" "+y+" "+pos[1]+" "+pos[3]);
+            Log.i(TAG, "nodeClicked: "+Nodes.get(i).getNodeArea(Nodes.get(i)).toString());
+            if(x > pos[0] && x < pos[2] && y > pos[1] && y < pos[3]){ //check if click was inside boundaries of node
+                Toast.makeText(context, "node clicked", Toast.LENGTH_SHORT).show();
             }
-            else{ ret = false;}
         }
-        Log.i(TAG, "nodeClicked: "+ret);
-        return ret;
     }
 
     @Override
@@ -111,17 +108,13 @@ public class NodeArcGenerator extends View {
                 this.x = event.getX();
                 this.y = event.getY();
                 //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
-
-                if(nodeClicked(event))
-                {
-                    Toast.makeText(context, "node clicked", Toast.LENGTH_SHORT).show();
-                }
+                nodeClicked(event.getX(),event.getY());
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE: // drag
                 this.x = event.getX();
                 this.y = event.getY();
-                Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
+                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
 //                if(nodeClicked(company)) {
 //                    company.nodeSetX(event.getX());
 //                    company.nodeSetY(event.getY());
