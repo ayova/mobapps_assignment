@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NodeArcGenerator extends View {
 
@@ -19,10 +20,10 @@ public class NodeArcGenerator extends View {
     private float x;
     private float y;
     private ArrayList<Node> Nodes = new ArrayList<>();
-    private Node company = new Node(500,500, 50);
+    private Node company = new Node(0,0, 50);
     private Canvas mCanvas;
-    int officerCount;
     Context context;
+    List<Officer> ofNodeLs;
 
     public NodeArcGenerator(Context context) {
         super(context);
@@ -31,54 +32,75 @@ public class NodeArcGenerator extends View {
         this.y = 0;
     }
 
-    private int getOfCount(){
+    //draw the officer nodes around the company node that's in the very center
+    private void drawOfficers(Canvas canvas){
+        //connection with rooms database to retrieve officers data
         AppDatabase db = Room.databaseBuilder(context,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
-        officerCount = db.officerDao().getAllOfficers().get(0).getId();
-        Log.d(TAG, "getOfCount: " + officerCount);
-        return officerCount;
+        ofNodeLs = db.officerDao().getAllOfficers();
+
+        Paint generic = new Paint();
+        generic.setColor(Color.RED);
+        Log.d(TAG, "drawOfficers: count >> "+db.officerDao().getOfficerCount());
+        if(ofNodeLs.isEmpty()){
+            Toast.makeText(context, "No directors available", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            int angleIncrease = 360 / ofNodeLs.size(); //divide the circumference in as many angles as officers there are
+
+            float cx = company.nodeGetX();
+            float cy = company.nodeGetY();
+
+    //        float scaleMarkSize = getResources().getDisplayMetrics().density * 16; // 16dp
+            float radius = 500;
+
+            for (int i = 0; i < 360; i += angleIncrease) {
+                float angle = (float) Math.toRadians(i); // Need to convert to radians first
+
+                float ofNodeX = (float) (cx + radius * Math.sin(angle));
+                float ofNodeY = (float) (cy - radius * Math.cos(angle));
+
+                for (int j = 0; j < ofNodeLs.size(); j++) {
+                    Node ofNode = new Node(ofNodeX, ofNodeY, 25);
+                    ofNode.drawNode(canvas, ofNode);
+                    Nodes.add(j,ofNode);
+                    canvas.drawLine(company.nodeGetX(), company.nodeGetY(), ofNodeX, ofNodeY, generic);
+                }
+            }
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mCanvas = canvas;
-
-
-
+        //set canvas to the middle of the screen
+        canvas.translate(getWidth()/2,getHeight()/2);
+        //paint
         Paint generic = new Paint();
         generic.setColor(Color.RED);
-        //company node in the middle
-        company.nodeGetX();
-        company.nodeGetY();
-        company.drawNode(canvas,company);
-        //Log.i("node position", "onDraw: " + " x: "+company.nodeGetX() + " y: " + company.nodeGetY());
-        company.getNodeArea(company);
+
+        company.drawNode(canvas, company);
+        drawOfficers(canvas);
+
     }
 
-    public boolean nodeClicked(Node node){
-        // TODO: 01/03/2019 when officer clicked, redirect to recycler view that shows the officer's data
-        //get the area of the node
-        float[] pos = node.getNodeArea(node);
-        //check if click was inside boundaries of node
-        if(this.x > pos[0] && this.x < pos[2] && this.y > pos[1] && this.y < pos[3]){
-            return true;
+    public boolean nodeClicked(MotionEvent event){
+        boolean ret = false;
+        x = event.getX();
+        y = event.getY();
+        //get area for each node
+        for (int i = 0; i < Nodes.size(); i++) {
+            Node node = Nodes.get(i);
+            //get the area of the node
+            float[] pos = node.getNodeArea(node);
+            //check if click was inside boundaries of node
+            if(this.x > pos[0] && this.x < pos[2] && this.y > pos[1] && this.y < pos[3]){
+                ret = true;
+            }
+            else{ ret = false;}
         }
-        else{ return false;}
-    }
-
-    public void drawAroundCompany(){
-        float[] outter = company.getNodeArea(company);
-        int left = (int) outter[0];
-        int top = (int) outter[1];
-        int right = (int) outter[2];
-        int bottom = (int) outter[3];
-
-        int x = left;
-        int y = top+company.getNodeRadius();
-
-        for (int i = 0; i < getOfCount(); i++) {
-//            Node newOfficer = new Node();
-        }
+        Log.i(TAG, "nodeClicked: "+ret);
+        return ret;
     }
 
     @Override
@@ -89,8 +111,10 @@ public class NodeArcGenerator extends View {
                 this.x = event.getX();
                 this.y = event.getY();
                 //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
-                if(nodeClicked(company)){
-                    Toast.makeText(this.getContext(), "Node clicked", Toast.LENGTH_SHORT).show();
+
+                if(nodeClicked(event))
+                {
+                    Toast.makeText(context, "node clicked", Toast.LENGTH_SHORT).show();
                 }
                 invalidate();
                 break;
@@ -98,11 +122,11 @@ public class NodeArcGenerator extends View {
                 this.x = event.getX();
                 this.y = event.getY();
                 Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
-                if(nodeClicked(company)) {
-                    company.nodeSetX(event.getX());
-                    company.nodeSetY(event.getY());
-                    company.drawNode(mCanvas, company);
-                }
+//                if(nodeClicked(company)) {
+//                    company.nodeSetX(event.getX());
+//                    company.nodeSetY(event.getY());
+//                    company.drawNode(mCanvas, company);
+//                }
                 invalidate();
                 break;
         }

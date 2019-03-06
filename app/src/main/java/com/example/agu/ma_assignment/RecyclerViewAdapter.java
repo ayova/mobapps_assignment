@@ -198,13 +198,14 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                 //insert straight to db
                                 db.officerDao().insertOfficer(insertOffi);
                             }
-
-                            Log.d(TAG, "onResponse: "+ db.officerDao().getOfficerCount());
-                            for (int i = 0; i < db.officerDao().getOfficerCount(); i++) {
-
-                                Log.d(TAG, "offnamedb: "+ db.officerDao().getAllOfficers().get(i).getOfficerName());
-
-                            }
+//                            Log what's been added to the room db
+//                            Log.d(TAG, "onResponse: "+ db.officerDao().getOfficerCount());
+//                            for (int i = 0; i < db.officerDao().getOfficerCount(); i++) {
+//
+//                                Log.d(TAG, "offnamedb: "+ db.officerDao().getAllOfficers().get(i).getOfficerName());
+//
+//                            }
+                            db.close();
                         } catch (Exception e) { //if the response generates an exception
                             Log.e("Response exception", "onResponse: ",e );
                             e.printStackTrace();
