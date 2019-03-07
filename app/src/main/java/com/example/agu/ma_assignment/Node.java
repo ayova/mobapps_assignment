@@ -11,7 +11,9 @@ public class Node extends Canvas {
     private float x=0;
     private float y=0;
     private int radius;
-    public Node(float x, float y, int radius) {
+    private int id;
+    public Node(int id, float x, float y, int radius) {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -21,6 +23,7 @@ public class Node extends Canvas {
         this.y = 0;
         this.radius = 0;
     }
+    public Node(int id){this.id = id;}
 
     public float nodeGetX(){
         return this.x;
@@ -29,6 +32,7 @@ public class Node extends Canvas {
         return this.y;
     }
 
+    //getters and setters for node
     public void nodeSetX(float x){
         this.x = x;
     }
@@ -38,8 +42,10 @@ public class Node extends Canvas {
     public void nodeSetRadius(int radius){
         this.radius = radius;
     }
-
+    public void setId(int id) { this.id = id; }
+    public int getId() { return id; }
     public int getNodeRadius(){return this.radius;}
+
 
     public void drawNode(Canvas canvas, Node node){
         Paint generic = new Paint();

@@ -21,6 +21,7 @@ public class NodeArcGenerator extends View {
     private float y;
     private ArrayList<Node> Nodes = new ArrayList<>();
     private Canvas mCanvas;
+    Paint generic = new Paint();
     private Node company = new Node();
 
     Context context;
@@ -54,18 +55,19 @@ public class NodeArcGenerator extends View {
     //        float scaleMarkSize = getResources().getDisplayMetrics().density * 16; // 16dp
             float radius = 500;
 
+            //scatter officer nodes around the company node
+            int j=0;
             for (int i = 0; i < 360; i += angleIncrease) {
                 float angle = (float) Math.toRadians(i); // Need to convert to radians first
 
                 float ofNodeX = (float) (cx + radius * Math.sin(angle));
                 float ofNodeY = (float) (cy - radius * Math.cos(angle));
 
-                for (int j = 0; j < ofNodeLs.size(); j++) {
-                    Node ofNode = new Node(ofNodeX, ofNodeY, 25);
-                    ofNode.drawNode(canvas, ofNode);
-                    Nodes.add(j,ofNode);
-                    canvas.drawLine(company.nodeGetX(), company.nodeGetY(), ofNodeX, ofNodeY, generic);
-                }
+                Node ofNode = new Node(j, ofNodeX, ofNodeY, 25);
+                ofNode.drawNode(canvas, ofNode);
+                Nodes.add(ofNode);
+                canvas.drawLine(company.nodeGetX(), company.nodeGetY(), ofNodeX, ofNodeY, generic);
+                j++;
             }
         }
     }
@@ -77,7 +79,6 @@ public class NodeArcGenerator extends View {
 //        //set canvas to the middle of the screen
 //        canvas.translate(getWidth()/2,getHeight()/2);
         //paint
-        Paint generic = new Paint();
         generic.setColor(Color.RED);
 
         company.nodeSetX(canvas.getWidth()/2);
@@ -90,13 +91,20 @@ public class NodeArcGenerator extends View {
 
     //check if the click event hits a node on the canvas (i.e. node is pressed)
     public void nodeClicked(float x, float y){
+        boolean clicked = false;
+        Node nodeCld = new Node();
         for (int i = 0; i < Nodes.size(); i++) { //get area for each node
             float[] pos = Nodes.get(i).getNodeArea(Nodes.get(i)); //get the area of the node
-            Log.i(TAG, "nodeClicked: "+x+" "+pos[0]+" "+pos[2]+" "+y+" "+pos[1]+" "+pos[3]);
-            Log.i(TAG, "nodeClicked: "+Nodes.get(i).getNodeArea(Nodes.get(i)).toString());
+//            Log.i(TAG, "nodeClicked: "+x+" "+pos[0]+" "+pos[2]+" "+y+" "+pos[1]+" "+pos[3]);
+            Node node = Nodes.get(i);
             if(x > pos[0] && x < pos[2] && y > pos[1] && y < pos[3]){ //check if click was inside boundaries of node
-                Toast.makeText(context, "node clicked", Toast.LENGTH_SHORT).show();
+                clicked = true;
+                nodeCld = node;
             }
+        }
+        if (clicked == true){
+            Toast.makeText(context, "Node clicked:"+nodeCld.getId(), Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -107,14 +115,14 @@ public class NodeArcGenerator extends View {
             case MotionEvent.ACTION_DOWN: // tap
                 this.x = event.getX();
                 this.y = event.getY();
-                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
+                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y); //uncomment to see where the click took place
                 nodeClicked(event.getX(),event.getY());
                 invalidate();
                 break;
             case MotionEvent.ACTION_MOVE: // drag
                 this.x = event.getX();
                 this.y = event.getY();
-                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y);
+                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y); //uncomment to track finger on screen
 //                if(nodeClicked(company)) {
 //                    company.nodeSetX(event.getX());
 //                    company.nodeSetY(event.getY());
