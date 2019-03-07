@@ -2,6 +2,7 @@ package com.example.agu.ma_assignment;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -70,6 +71,7 @@ public class NodeArcGenerator extends View {
                 j++;
             }
         }
+        db.close();
     }
 
     @Override
@@ -92,20 +94,27 @@ public class NodeArcGenerator extends View {
     //check if the click event hits a node on the canvas (i.e. node is pressed)
     public void nodeClicked(float x, float y){
         boolean clicked = false;
-        Node nodeCld = new Node();
+        Node nodeCld = new Node(); //node var to hold the node that's being clicked on
         for (int i = 0; i < Nodes.size(); i++) { //get area for each node
             float[] pos = Nodes.get(i).getNodeArea(Nodes.get(i)); //get the area of the node
-//            Log.i(TAG, "nodeClicked: "+x+" "+pos[0]+" "+pos[2]+" "+y+" "+pos[1]+" "+pos[3]);
-            Node node = Nodes.get(i);
+            Node node = Nodes.get(i); //get the node that's being clicked on
             if(x > pos[0] && x < pos[2] && y > pos[1] && y < pos[3]){ //check if click was inside boundaries of node
                 clicked = true;
-                nodeCld = node;
+                nodeCld = node;//and pass it outside the loop
             }
         }
-        if (clicked == true){
+        if (clicked == true){ //if an officer node was clicked, then...
+            // TODO: 07/03/2019 A new recycler view should display the officer information
             Toast.makeText(context, "Node clicked:"+nodeCld.getId(), Toast.LENGTH_SHORT).show();
-
+            displayOfficerData(nodeCld.getId());
         }
+    }
+
+    private void displayOfficerData(int offiID){
+        Intent intent = new Intent(context, DisplayOfficerData.class);
+        intent.putExtra("offiID", offiID);
+        context.startActivity(intent);
+
     }
 
     @Override

@@ -25,4 +25,5 @@ public interface OfficerDao {
 
     @Insert
     void insertOfficer(Officer officer);
+
 }

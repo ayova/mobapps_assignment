@@ -108,6 +108,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     private void deleteOldOfficers(){
         AppDatabase db = Room.databaseBuilder(mContext,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
         db.officerDao().deleteAllOfficers();
+        db.close();
     }
 
     private void api_search_officers(View view, String CNumber, final String CName){
