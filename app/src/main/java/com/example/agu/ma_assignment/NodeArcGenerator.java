@@ -110,6 +110,17 @@ public class NodeArcGenerator extends View {
         canvas.save();
         canvas.scale(scaleFactor,scaleFactor); // detect pinch x,y
         //canvas.translate(TranslatedX/scaleFactor, TranslatedY/scaleFactor);
+        if((TranslatedX * -1) < 0) {
+            TranslatedX = 0;
+        } else if ((TranslatedX * -1) > canvas.getWidth() * scaleFactor - getWidth()) {
+            TranslatedX = (canvas.getWidth() * scaleFactor - getWidth()) * -1;
+        }
+        if((TranslatedY * -1) < 0) {
+            TranslatedY = 0;
+        } else if ((TranslatedY * -1) > canvas.getHeight() * scaleFactor - getHeight()) {
+            TranslatedY = (canvas.getHeight() * scaleFactor - getHeight()) * -1;
+        }
+        canvas.translate(TranslatedX/scaleFactor, TranslatedY/scaleFactor);
         generic.setColor(Color.RED);
         centerComp();
         company.nodeSetRadius(50);
