@@ -52,7 +52,7 @@ public class DisplayOfficerData extends AppCompatActivity {
         officerAddress.setText(txname);
         officerDob.setText(txdob);
         officerNationality.setText(txnat);
-        officerName.setText(txaddr); 
+        officerName.setText(txaddr);
 
 
         db.close();

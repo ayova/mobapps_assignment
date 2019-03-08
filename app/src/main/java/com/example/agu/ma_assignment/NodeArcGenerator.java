@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,15 +25,42 @@ public class NodeArcGenerator extends View {
     private Canvas mCanvas;
     Paint generic = new Paint();
     private Node company = new Node();
+    int mCanWidth, mCanHeight;
+    private final static float minZoom = 1.f;
+    private final static float maxZoom = 5.f;
+    private float scaleFactor = 1.f;
+    private ScaleGestureDetector mScaleGestureDetector;
+    private Context context;
+    private List<Officer> ofNodeLs;
+    int mCanvasWidth, mCanvasHeight;
+    private final static int NONE = 0;
+    private final static int PAN = 1;
+    private final static int ZOOM = 2;
+    private int EventState;
+    private float StartX = 0;
+    private float StartY = 0;
+    private float TranslatedX = 0;
+    private float TranslatedY = 0;
+    private float PreviousTranslatedX = 0;
+    private float PreviousTranslatedY = 0;
 
-    Context context;
-    List<Officer> ofNodeLs;
+    public class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            scaleFactor *= detector.getScaleFactor();
+            scaleFactor = Math.max(minZoom,Math.min(maxZoom,scaleFactor));
+            //invalidate();
+            //requestLayout();
+            return super.onScale(detector);
+        }
+    }
 
     public NodeArcGenerator(Context context) {
         super(context);
         this.context = context;
         this.x = 0;
         this.y = 0;
+        mScaleGestureDetector = new ScaleGestureDetector(getContext(),new ScaleListener());
     }
 
     //draw the officer nodes around the company node that's in the very center
@@ -74,21 +102,29 @@ public class NodeArcGenerator extends View {
         db.close();
     }
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         mCanvas = canvas;
-//        //set canvas to the middle of the screen
-//        canvas.translate(getWidth()/2,getHeight()/2);
-        //paint
+        canvas.save();
+        canvas.scale(scaleFactor,scaleFactor); // detect pinch x,y
+        //canvas.translate(TranslatedX/scaleFactor, TranslatedY/scaleFactor);
         generic.setColor(Color.RED);
-
-        company.nodeSetX(canvas.getWidth()/2);
-        company.nodeSetY(canvas.getHeight()/2);
+        centerComp();
         company.nodeSetRadius(50);
         company.drawNode(canvas, company);
         drawOfficers(canvas);
 
+        canvas.restore();
+    }
+
+    //used to center the company (whenever coords hit 0,0)
+    public void centerComp(){
+        if (company.nodeGetX() == 0 && company.nodeGetY() == 0 || scaleFactor == 1.f){
+            company.nodeSetX(getWidth()/2);
+            company.nodeSetY(getHeight()/2);
+        }
     }
 
     //check if the click event hits a node on the canvas (i.e. node is pressed)
@@ -110,6 +146,16 @@ public class NodeArcGenerator extends View {
         }
     }
 
+    //use to drag the entire node graph around
+    public boolean companyDragged(float x, float y,Node company){
+        float[] pos = company.getNodeArea(company);
+        if(x > pos[0] && x < pos[2] && y > pos[1] && y < pos[3]) { //check if click was inside boundaries of the company node
+            return true;
+        }
+        else{ return false;}
+
+        }
+
     private void displayOfficerData(int offiID){
         Intent intent = new Intent(context, DisplayOfficerData.class);
         intent.putExtra("offiID", offiID);
@@ -119,30 +165,109 @@ public class NodeArcGenerator extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        super.onTouchEvent(event);
-        switch(event.getAction()){
-            case MotionEvent.ACTION_DOWN: // tap
-                this.x = event.getX();
-                this.y = event.getY();
-                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y); //uncomment to see where the click took place
-                nodeClicked(event.getX(),event.getY());
-                invalidate();
-                break;
-            case MotionEvent.ACTION_MOVE: // drag
-                this.x = event.getX();
-                this.y = event.getY();
-                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y); //uncomment to track finger on screen
-//                if(nodeClicked(company)) {
+//        super.onTouchEvent(event);
+//        switch(event.getAction()){
+//            case MotionEvent.ACTION_DOWN: // tap
+//                this.x = event.getX();
+//                this.y = event.getY();
+//                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y); //uncomment to see where the click took place
+//                nodeClicked(event.getX(),event.getY());
+//                invalidate();
+//                break;
+//            case MotionEvent.ACTION_MOVE: // drag
+//                this.x = event.getX();
+//                this.y = event.getY();
+//                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y); //uncomment to track finger on screen
+//                if(companyDragged(event.getX(),event.getY(),company)) {
 //                    company.nodeSetX(event.getX());
 //                    company.nodeSetY(event.getY());
 //                    company.drawNode(mCanvas, company);
 //                }
-                invalidate();
+//                invalidate();
+//                break;
+//        }
+        switch(event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN:
+                EventState = PAN;
+                StartX = event.getX() - PreviousTranslatedX;
+                StartY = event.getY() - PreviousTranslatedY;
+                nodeClicked(event.getX(),event.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+                EventState = NONE;
+                PreviousTranslatedX = TranslatedX;
+                PreviousTranslatedY = TranslatedY;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                TranslatedX = event.getX() - StartX;
+                TranslatedY = event.getY() - StartY;
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                EventState = ZOOM;
                 break;
         }
-
-
-        this.postInvalidate();
+        mScaleGestureDetector.onTouchEvent(event);
+        if((EventState == PAN && scaleFactor != minZoom) || EventState == ZOOM) {
+            invalidate();
+            requestLayout();
+        }
         return true;
+
+
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        //get canvas size
+        mCanWidth = MeasureSpec.getSize(widthMeasureSpec);
+        mCanHeight = MeasureSpec.getSize(heightMeasureSpec);
+
+//        mCanvasWidth = mCanvas.getWidth();
+//        mCanHeight = mCanvas.getHeight();
+//        //resize canvas as we scale
+
+        // TODO: 08/03/2019 need to get the code below working for it to zoom and pan properly; problem being: mCanvas = null 
+//        int scaleWidth = Math.round(mCanvasWidth * scaleFactor);
+//        int scaleHeight = Math.round(mCanvasHeight * scaleFactor);
+//        setMeasuredDimension(Math.min(mCanWidth, scaleWidth),Math.min(mCanHeight,scaleHeight));
+
+        int desiredWidth = 500;
+        int desiredHeight = 500;
+
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        int width;
+        int height;
+
+        //Measure Width
+        if (widthMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            width = widthSize;
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            width = Math.min(desiredWidth, widthSize);
+        } else {
+            //Be whatever you want
+            width = desiredWidth;
+        }
+
+        //Measure Height
+        if (heightMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            height = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            height = Math.min(desiredHeight, heightSize);
+        } else {
+            //Be whatever you want
+            height = desiredHeight;
+        }
+
+        //MUST CALL THIS
+        setMeasuredDimension(width, height);
     }
 }
