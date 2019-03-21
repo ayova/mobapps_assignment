@@ -52,6 +52,13 @@ public class Node extends Canvas {
         generic.setColor(Color.RED);
         canvas.drawCircle(node.nodeGetX(),node.nodeGetY(),50, generic);
     }
+    public void drawNode(Canvas canvas, Node node, String who){
+        Paint generic = new Paint();
+        if (who == "officer" ){
+            generic.setColor(Color.BLUE);
+        }
+        canvas.drawCircle(node.nodeGetX(),node.nodeGetY(),50, generic);
+    }
 
     public float[] getNodeArea(Node node){
         //calculate the borders where to register the clicks

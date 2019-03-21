@@ -1,16 +1,21 @@
 package com.example.agu.ma_assignment;
 
+import android.app.Activity;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,7 +32,7 @@ public class NodeArcGenerator extends View {
     private Node company = new Node();
     int mCanWidth, mCanHeight;
     private final static float minZoom = 1.f;
-    private final static float maxZoom = 5.f;
+    private final static float maxZoom =10.0f;
     private float scaleFactor = 1.f;
     private ScaleGestureDetector mScaleGestureDetector;
     private Context context;
@@ -43,13 +48,19 @@ public class NodeArcGenerator extends View {
     private float TranslatedY = 0;
     private float PreviousTranslatedX = 0;
     private float PreviousTranslatedY = 0;
+    private float scaleStartX, scaleStartY;
+
+
 
     public class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            scaleFactor *= detector.getScaleFactor();
-            scaleFactor = Math.max(minZoom,Math.min(maxZoom,scaleFactor));
-            //invalidate();
+            scaleFactor = detector.getScaleFactor();
+            scaleFactor = Math.max(minZoom,Math.min(scaleFactor, maxZoom));
+            scaleStartX = detector.getFocusX();
+            scaleStartY = detector.getFocusY();
+
+            invalidate();
             //requestLayout();
             return super.onScale(detector);
         }
@@ -68,20 +79,16 @@ public class NodeArcGenerator extends View {
         //connection with rooms database to retrieve officers data
         AppDatabase db = Room.databaseBuilder(context,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
         ofNodeLs = db.officerDao().getAllOfficers();
-
         Paint generic = new Paint();
-        generic.setColor(Color.RED);
+        generic.setColor(Color.BLACK);
         Log.d(TAG, "drawOfficers: count >> "+db.officerDao().getOfficerCount());
         if(ofNodeLs.isEmpty()){
             Toast.makeText(context, "No directors available", Toast.LENGTH_SHORT).show();
         }
         else {
             int angleIncrease = 360 / ofNodeLs.size(); //divide the circumference in as many angles as officers there are
-
             float cx = company.nodeGetX();
             float cy = company.nodeGetY();
-
-    //        float scaleMarkSize = getResources().getDisplayMetrics().density * 16; // 16dp
             float radius = 500;
 
             //scatter officer nodes around the company node
@@ -93,7 +100,7 @@ public class NodeArcGenerator extends View {
                 float ofNodeY = (float) (cy - radius * Math.cos(angle));
 
                 Node ofNode = new Node(j, ofNodeX, ofNodeY, 25);
-                ofNode.drawNode(canvas, ofNode);
+                ofNode.drawNode(canvas, ofNode, "officer");
                 Nodes.add(ofNode);
                 canvas.drawLine(company.nodeGetX(), company.nodeGetY(), ofNodeX, ofNodeY, generic);
                 j++;
@@ -103,13 +110,13 @@ public class NodeArcGenerator extends View {
     }
 
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mCanvas = canvas;
         canvas.save();
-        canvas.scale(scaleFactor,scaleFactor); // detect pinch x,y
-        //canvas.translate(TranslatedX/scaleFactor, TranslatedY/scaleFactor);
+        canvas.scale(scaleFactor,scaleFactor, scaleStartX, scaleStartY); // detect pinch x,y
+//        canvas.translate(TranslatedX/scaleFactor, TranslatedY/scaleFactor);
         if((TranslatedX * -1) < 0) {
             TranslatedX = 0;
         } else if ((TranslatedX * -1) > canvas.getWidth() * scaleFactor - getWidth()) {
@@ -128,6 +135,7 @@ public class NodeArcGenerator extends View {
         drawOfficers(canvas);
 
         canvas.restore();
+        mCanvas = canvas;
     }
 
     //used to center the company (whenever coords hit 0,0)
@@ -239,8 +247,8 @@ public class NodeArcGenerator extends View {
 //        //resize canvas as we scale
 
         // TODO: 08/03/2019 need to get the code below working for it to zoom and pan properly; problem being: mCanvas = null 
-//        int scaleWidth = Math.round(mCanvasWidth * scaleFactor);
-//        int scaleHeight = Math.round(mCanvasHeight * scaleFactor);
+        int scaleWidth = Math.round(mCanvasWidth * scaleFactor);
+        int scaleHeight = Math.round(mCanvasHeight * scaleFactor);
 //        setMeasuredDimension(Math.min(mCanWidth, scaleWidth),Math.min(mCanHeight,scaleHeight));
 
         int desiredWidth = 500;

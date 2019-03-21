@@ -1,10 +1,12 @@
 package com.example.agu.ma_assignment;
 
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -78,8 +80,16 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 //putExtra to attach the data to be sent over to the other activity
                 intent.putExtra("compName", CNames.get(i));
                 intent.putExtra("compNumber", CNumber.get(i));
-                api_search_officers(v, CNumber.get(i), CNames.get(i)); //gets right information but doesnt save to local variables (ArrayList<String>)
-                mContext.startActivity(intent);
+                api_search_officers(v, CNumber.get(i), CNames.get(i)); //gets right information but doesnt save to local variables (ArrayList<String>
+
+                AppDatabase db = Room.databaseBuilder(mContext,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
+                LiveData<List<Officer>> a = db.officerDao().getAllOfficers1();
+                a.observeForever((List<Officer> listyboi)->{
+                    mContext.startActivity(intent);
+                });
+                db.close();
+
+
             }
         });
 
@@ -233,6 +243,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
         };
         //Finally, add the request to the request queue
         rQueue.add(JSONretriever);
+
     }
 
 }
