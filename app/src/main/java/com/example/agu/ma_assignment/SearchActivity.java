@@ -129,8 +129,4 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: 01/03/2019 IMPLEMENT ROOMS DATABASE
-    // TODO: 01/03/2019 reminder (adapt companynames and no for DAO)
-    // TODO: 01/03/2019 ADD SEARCH HISTORY - less important
-
 }

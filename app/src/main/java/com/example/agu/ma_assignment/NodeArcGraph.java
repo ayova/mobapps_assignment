@@ -4,18 +4,24 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -30,6 +36,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,13 +49,9 @@ import javax.security.auth.login.LoginException;
 public class NodeArcGraph extends AppCompatActivity {
 
     NodeArcGenerator v;
-    private String CName;
-    private String Cnumber;
+    private FloatingActionButton shareBtn;
 
-    private ArrayList<String> officerName = new ArrayList<>();
-    private ArrayList<String> officerDoB = new ArrayList<>();
-    private ArrayList<String> officerNat = new ArrayList<>();
-    private ArrayList<String> officerAddress = new ArrayList<>();
+    private ConstraintLayout idForSaveView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,8 @@ public class NodeArcGraph extends AppCompatActivity {
 
         v = new NodeArcGenerator(this);
         setContentView(v);
+        idForSaveView = findViewById(R.id.saveToShare);
+
         //getIntentData();
 
         // Set back button in title bar
@@ -70,22 +76,38 @@ public class NodeArcGraph extends AppCompatActivity {
         return true;
     }
 
-    // TODO: 01/03/2019: DELETE (AFTER ROOMS DB IMPLEMENTED!!!)
-//    private void getIntentData(){
-//        if(getIntent().hasExtra("compName") && getIntent().hasExtra("compNumber")){
-//            CName = getIntent().getStringExtra("compName");
-//            Cnumber = getIntent().getStringExtra("compNumber");
-//            //Bundle gBundle = getIntent().getBundleExtra("myBundle");
-//            //officerName = gBundle.getStringArrayList("offName");
-//            officerName = getIntent().getStringArrayListExtra("offName");
-//            for(int i=0; i < officerName.size() ; i++)//for testing purposes
-//            {
-//                Log.d("MSG_PASSED=>", "getOfficers: "+officerName.get(i));
-//            }
-//            Log.i("CompData", "Name; "+ CName + " Number; " + Cnumber);
-//        }
-//        else{
-//            Log.d("IntentExtras", "getIntentData: EMPTY");
-//        }
-//    }
+    public void OnClickShare(View view){
+
+        Bitmap bitmap =getBitmapFromView(idForSaveView);
+        try {
+            File file = new File(this.getExternalCacheDir(),"logicchip.png");
+            FileOutputStream fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            file.setReadable(true, false);
+            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+            intent.setType("image/png");
+            startActivity(Intent.createChooser(intent, "Share image via"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Bitmap getBitmapFromView(View view) {
+        Bitmap returnedBitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        Drawable bgDrawable =view.getBackground();
+        if (bgDrawable!=null) {
+            //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas);
+        }   else{
+            //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE);
+        }
+        view.draw(canvas);
+        return returnedBitmap;
+    }
 }
