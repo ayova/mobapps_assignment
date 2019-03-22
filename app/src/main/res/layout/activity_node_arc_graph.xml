@@ -8,19 +8,23 @@
     tools:context=".NodeArcGraph"
     android:orientation="vertical">
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/saveToShare"
-        android:orientation="vertical">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/node_view" />
-        <Button
-            android:id="@+id/sharebtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SHARE!!"/>
-    </LinearLayout>
+        android:layout_height="300dp"
+        android:id="@+id/node_view" />
+
+    <Button
+        android:id="@+id/share_btn"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Share this graph"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:onClick="shareClicked"/>
+
+
 </android.support.constraint.ConstraintLayout>

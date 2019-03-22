@@ -51,7 +51,6 @@ public class NodeArcGenerator extends View {
     private float scaleStartX, scaleStartY;
 
 
-
     public class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
