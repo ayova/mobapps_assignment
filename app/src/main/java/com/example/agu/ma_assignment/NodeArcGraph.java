@@ -24,6 +24,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -147,12 +148,13 @@ public class NodeArcGraph extends AppCompatActivity {
         }
     }
 
-    /////////////
+    //class extended in order to be able and share photos properly in SDK versions 24 and higher
+    public class GenericFileProvider extends FileProvider {}
 
     public Bitmap getBitmap(View v){ //function to convert the canvas into a bitmap that can be shared
         Bitmap viewToBmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(),Bitmap.Config.ARGB_8888); //make a bitmap the size of the view
         Canvas canvas = new Canvas(viewToBmap); //git the
-        canvas.drawColor(Color.GRAY);
+        canvas.drawColor(Color.WHITE);
         v.draw(canvas);
         //return the bitmap
         return viewToBmap;
@@ -166,7 +168,8 @@ public class NodeArcGraph extends AppCompatActivity {
             FileOutputStream stream = new FileOutputStream(file); //save the bitmap
             nodeGraph.compress(Bitmap.CompressFormat.PNG, 100, stream);
             stream.close();
-            uri = Uri.fromFile(file);
+//            uri = Uri.fromFile(file); // not usable for SDK version >= 24
+            uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", file);
         } catch (IOException e) {
             Log.d(TAG, "Sharing error: " + e.getMessage());
         }
