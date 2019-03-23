@@ -67,7 +67,7 @@ public class NodeArcGraph extends AppCompatActivity {
     NodeArcGenerator v;
     private FloatingActionButton shareGraphBtn;
     private static final int PERMISSION_REQUEST_CODE = 200;
-
+    private Thread ex;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,6 +93,15 @@ public class NodeArcGraph extends AppCompatActivity {
 //            }
 //
 //        });
+        new Thread(()->{
+            try {
+                Thread.sleep(2000);
+                v.invalidate();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
 
     }
 

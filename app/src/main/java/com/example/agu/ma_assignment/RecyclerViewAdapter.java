@@ -86,6 +86,7 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 LiveData<List<Officer>> a = db.officerDao().getAllOfficers1();
                 a.observeForever((List<Officer> listyboi)->{
                     mContext.startActivity(intent);
+
                 });
                 db.close();
 

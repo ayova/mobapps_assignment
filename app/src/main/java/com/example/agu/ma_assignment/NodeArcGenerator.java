@@ -72,7 +72,9 @@ public class NodeArcGenerator extends View {
         this.y = 0;
         mScaleGestureDetector = new ScaleGestureDetector(getContext(),new ScaleListener());
     }
-
+    public void redraw(){
+        invalidate();
+    }
     //draw the officer nodes around the company node that's in the very center
     private void drawOfficers(Canvas canvas){
         //connection with rooms database to retrieve officers data
@@ -82,7 +84,7 @@ public class NodeArcGenerator extends View {
         generic.setColor(Color.BLACK);
         Log.d(TAG, "drawOfficers: count >> "+db.officerDao().getOfficerCount());
         if(ofNodeLs.isEmpty()){
-            Toast.makeText(context, "No directors available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show();
         }
         else {
             int angleIncrease = 360 / ofNodeLs.size(); //divide the circumference in as many angles as officers there are
@@ -158,21 +160,10 @@ public class NodeArcGenerator extends View {
             }
         }
         if (clicked == true){ //if an officer node was clicked, then...
-            // TODO: 07/03/2019 A new recycler view should display the officer information
             Toast.makeText(context, "Node clicked:"+nodeCld.getId(), Toast.LENGTH_SHORT).show();
             displayOfficerData(nodeCld.getId());
         }
     }
-
-    //use to drag the entire node graph around
-    public boolean companyDragged(float x, float y,Node company){
-        float[] pos = company.getNodeArea(company);
-        if(x > pos[0] && x < pos[2] && y > pos[1] && y < pos[3]) { //check if click was inside boundaries of the company node
-            return true;
-        }
-        else{ return false;}
-
-        }
 
     private void displayOfficerData(int offiID){
         Intent intent = new Intent(context, DisplayOfficerData.class);
@@ -183,27 +174,6 @@ public class NodeArcGenerator extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        super.onTouchEvent(event);
-//        switch(event.getAction()){
-//            case MotionEvent.ACTION_DOWN: // tap
-//                this.x = event.getX();
-//                this.y = event.getY();
-//                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y); //uncomment to see where the click took place
-//                nodeClicked(event.getX(),event.getY());
-//                invalidate();
-//                break;
-//            case MotionEvent.ACTION_MOVE: // drag
-//                this.x = event.getX();
-//                this.y = event.getY();
-//                //Log.d("LISTENEDEVENT", "X:"+x+" Y:"+y); //uncomment to track finger on screen
-//                if(companyDragged(event.getX(),event.getY(),company)) {
-//                    company.nodeSetX(event.getX());
-//                    company.nodeSetY(event.getY());
-//                    company.drawNode(mCanvas, company);
-//                }
-//                invalidate();
-//                break;
-//        }
         switch(event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 EventState = PAN;
@@ -241,51 +211,48 @@ public class NodeArcGenerator extends View {
         mCanWidth = MeasureSpec.getSize(widthMeasureSpec);
         mCanHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-//        mCanvasWidth = mCanvas.getWidth();
-//        mCanHeight = mCanvas.getHeight();
 //        //resize canvas as we scale
 
-        // TODO: 08/03/2019 need to get the code below working for it to zoom and pan properly; problem being: mCanvas = null 
-        int scaleWidth = Math.round(mCanvasWidth * scaleFactor);
-        int scaleHeight = Math.round(mCanvasHeight * scaleFactor);
-//        setMeasuredDimension(Math.min(mCanWidth, scaleWidth),Math.min(mCanHeight,scaleHeight));
+        int scaleWidth = Math.round(mCanWidth * scaleFactor);
+        int scaleHeight = Math.round(mCanHeight * scaleFactor);
+        setMeasuredDimension(Math.min(mCanWidth, scaleWidth),Math.min(mCanHeight,scaleHeight));
 
-        int desiredWidth = 500;
-        int desiredHeight = 500;
-
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
-        int width;
-        int height;
-
-        //Measure Width
-        if (widthMode == MeasureSpec.EXACTLY) {
-            //Must be this size
-            width = widthSize;
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
-            width = Math.min(desiredWidth, widthSize);
-        } else {
-            //Be whatever you want
-            width = desiredWidth;
-        }
-
-        //Measure Height
-        if (heightMode == MeasureSpec.EXACTLY) {
-            //Must be this size
-            height = heightSize;
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
-            height = Math.min(desiredHeight, heightSize);
-        } else {
-            //Be whatever you want
-            height = desiredHeight;
-        }
-
-        //MUST CALL THIS
-        setMeasuredDimension(width, height);
+//        int desiredWidth = 500;
+//        int desiredHeight = 500;
+//
+//        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+//        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+//        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+//
+//        int width;
+//        int height;
+//
+//        //Measure Width
+//        if (widthMode == MeasureSpec.EXACTLY) {
+//            //Must be this size
+//            width = widthSize;
+//        } else if (widthMode == MeasureSpec.AT_MOST) {
+//            //Can't be bigger than...
+//            width = Math.min(desiredWidth, widthSize);
+//        } else {
+//            //Be whatever you want
+//            width = desiredWidth;
+//        }
+//
+//        //Measure Height
+//        if (heightMode == MeasureSpec.EXACTLY) {
+//            //Must be this size
+//            height = heightSize;
+//        } else if (heightMode == MeasureSpec.AT_MOST) {
+//            //Can't be bigger than...
+//            height = Math.min(desiredHeight, heightSize);
+//        } else {
+//            //Be whatever you want
+//            height = desiredHeight;
+//        }
+//
+//        //MUST CALL THIS
+//        setMeasuredDimension(width, height);
     }
 }
