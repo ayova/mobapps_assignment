@@ -116,8 +116,7 @@ public class NodeArcGenerator extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
-        canvas.scale(scaleFactor,scaleFactor, scaleStartX, scaleStartY); // detect pinch x,y
-//        canvas.translate(TranslatedX/scaleFactor, TranslatedY/scaleFactor);
+        canvas.scale(scaleFactor,scaleFactor); // detect pinch x,y
         if((TranslatedX * -1) < 0) {
             TranslatedX = 0;
         } else if ((TranslatedX * -1) > canvas.getWidth() * scaleFactor - getWidth()) {
@@ -139,7 +138,7 @@ public class NodeArcGenerator extends View {
         mCanvas = canvas;
     }
 
-    //used to center the company (whenever coords hit 0,0)
+    //used to center the company (whenever coords hit 0,0 i.e. at the very start)
     public void centerComp(){
         if (company.nodeGetX() == 0 && company.nodeGetY() == 0 || scaleFactor == 1.f){
             company.nodeSetX(getWidth()/2);
@@ -211,48 +210,11 @@ public class NodeArcGenerator extends View {
         mCanWidth = MeasureSpec.getSize(widthMeasureSpec);
         mCanHeight = MeasureSpec.getSize(heightMeasureSpec);
 
-//        //resize canvas as we scale
+        //resize canvas as we scale
 
         int scaleWidth = Math.round(mCanWidth * scaleFactor);
         int scaleHeight = Math.round(mCanHeight * scaleFactor);
         setMeasuredDimension(Math.min(mCanWidth, scaleWidth),Math.min(mCanHeight,scaleHeight));
 
-//        int desiredWidth = 500;
-//        int desiredHeight = 500;
-//
-//        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-//        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-//        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-//        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-//
-//        int width;
-//        int height;
-//
-//        //Measure Width
-//        if (widthMode == MeasureSpec.EXACTLY) {
-//            //Must be this size
-//            width = widthSize;
-//        } else if (widthMode == MeasureSpec.AT_MOST) {
-//            //Can't be bigger than...
-//            width = Math.min(desiredWidth, widthSize);
-//        } else {
-//            //Be whatever you want
-//            width = desiredWidth;
-//        }
-//
-//        //Measure Height
-//        if (heightMode == MeasureSpec.EXACTLY) {
-//            //Must be this size
-//            height = heightSize;
-//        } else if (heightMode == MeasureSpec.AT_MOST) {
-//            //Can't be bigger than...
-//            height = Math.min(desiredHeight, heightSize);
-//        } else {
-//            //Be whatever you want
-//            height = desiredHeight;
-//        }
-//
-//        //MUST CALL THIS
-//        setMeasuredDimension(width, height);
     }
 }
