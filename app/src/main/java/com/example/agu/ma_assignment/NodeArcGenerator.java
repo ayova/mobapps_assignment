@@ -24,8 +24,6 @@ import java.util.List;
 public class NodeArcGenerator extends View {
 
     final String TAG = "NodeArcGen";
-    private float x;
-    private float y;
     private ArrayList<Node> Nodes = new ArrayList<>();
     private Canvas mCanvas;
     Paint generic = new Paint();
@@ -37,7 +35,6 @@ public class NodeArcGenerator extends View {
     private ScaleGestureDetector mScaleGestureDetector;
     private Context context;
     private List<Officer> ofNodeLs;
-    int mCanvasWidth, mCanvasHeight;
     private final static int NONE = 0;
     private final static int PAN = 1;
     private final static int ZOOM = 2;
@@ -51,31 +48,34 @@ public class NodeArcGenerator extends View {
     private float scaleStartX, scaleStartY;
 
 
+    /* Used later to detect and respond to onTouchEvent(s) like panning and zooming */
     public class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             scaleFactor = detector.getScaleFactor();
             scaleFactor = Math.max(minZoom,Math.min(scaleFactor, maxZoom));
+            // get the two points to execute the zooming
             scaleStartX = detector.getFocusX();
             scaleStartY = detector.getFocusY();
 
             invalidate();
-            //requestLayout();
             return super.onScale(detector);
         }
     }
 
+    /* Basic constructor */
     public NodeArcGenerator(Context context) {
         super(context);
         this.context = context;
-        this.x = 0;
-        this.y = 0;
+        float x = 0;
+        float y = 0;
         mScaleGestureDetector = new ScaleGestureDetector(getContext(),new ScaleListener());
     }
-    public void redraw(){
-        invalidate();
-    }
-    //draw the officer nodes around the company node that's in the very center
+
+    /* after the wait thread is executed, then call redraw to make the diagram visible */
+    public void redraw(){ invalidate(); }
+
+    /*draw the officer nodes around the company node that's in the very center */
     private void drawOfficers(Canvas canvas){
         //connection with rooms database to retrieve officers data
         AppDatabase db = Room.databaseBuilder(context,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
@@ -86,7 +86,7 @@ public class NodeArcGenerator extends View {
         if(ofNodeLs.isEmpty()){
             Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show();
         }
-        else {
+        else{
             int angleIncrease = 360 / ofNodeLs.size(); //divide the circumference in as many angles as officers there are
             float cx = company.nodeGetX();
             float cy = company.nodeGetY();
@@ -97,21 +97,21 @@ public class NodeArcGenerator extends View {
             for (int i = 0; i < 360; i += angleIncrease) {
                 float angle = (float) Math.toRadians(i); // Need to convert to radians first
 
+                // trigonometry for setting officers around company nodes
                 float ofNodeX = (float) (cx + radius * Math.sin(angle));
                 float ofNodeY = (float) (cy - radius * Math.cos(angle));
 
-                Node ofNode = new Node(j, ofNodeX, ofNodeY, 25);
-                ofNode.drawNode(canvas, ofNode, "officer");
-                Nodes.add(ofNode);
-                canvas.drawLine(company.nodeGetX(), company.nodeGetY(), ofNodeX, ofNodeY, generic);
+                Node ofNode = new Node(j, ofNodeX, ofNodeY, 25); //use j to index all nodes differently so they are unique
+                ofNode.drawNode(canvas, ofNode, "officer"); //draw the node with "officer" paint (blue)
+                Nodes.add(ofNode); //add the newly generated node to the arraylist
+                canvas.drawLine(company.nodeGetX(), company.nodeGetY(), ofNodeX, ofNodeY, generic); //line to connect each officer node with company node
                 j++;
             }
         }
-        db.close();
+        db.close(); //close connection to avoid memory leaks
     }
 
-
-
+    /* Where all items are actually drawn to the canvas */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -138,7 +138,8 @@ public class NodeArcGenerator extends View {
         mCanvas = canvas;
     }
 
-    //used to center the company (whenever coords hit 0,0 i.e. at the very start)
+    /* Used to center the company (whenever coords hit 0,0 i.e. at the very start).
+     * Mainly used for centering company when first drawing to the canvas */
     public void centerComp(){
         if (company.nodeGetX() == 0 && company.nodeGetY() == 0 || scaleFactor == 1.f){
             company.nodeSetX(getWidth()/2);
@@ -146,37 +147,38 @@ public class NodeArcGenerator extends View {
         }
     }
 
-    //check if the click event hits a node on the canvas (i.e. node is pressed)
+    /* Check if the click event hits a node on the canvas (i.e. node is pressed) */
     public void nodeClicked(float x, float y){
-        boolean clicked = false;
+        boolean clicked = false; // false by default
         Node nodeCld = new Node(); //node var to hold the node that's being clicked on
-        for (int i = 0; i < Nodes.size(); i++) { //get area for each node
-            float[] pos = Nodes.get(i).getNodeArea(Nodes.get(i)); //get the area of the node
-            Node node = Nodes.get(i); //get the node that's being clicked on
-            if(x > pos[0] && x < pos[2] && y > pos[1] && y < pos[3]){ //check if click was inside boundaries of node
+        for (int i = 0; i < Nodes.size(); i++) {                        //for each node
+            float[] pos = Nodes.get(i).getNodeArea(Nodes.get(i));       //get the area of the node
+            Node node = Nodes.get(i);                                   //get the node that's being clicked on
+            if(x > pos[0] && x < pos[2] && y > pos[1] && y < pos[3]){   //check if click was inside boundaries of node
                 clicked = true;
-                nodeCld = node;//and pass it outside the loop
+                nodeCld = node;                                         //and pass it outside the loop
             }
         }
-        if (clicked == true){ //if an officer node was clicked, then...
-            Toast.makeText(context, "Node clicked:"+nodeCld.getId(), Toast.LENGTH_SHORT).show();
-            displayOfficerData(nodeCld.getId());
+        if (clicked){ //if an officer node was clicked, then... display message and proceed to officer info
+            Toast.makeText(context, "Node "+nodeCld.getId()+" clicked.", Toast.LENGTH_SHORT).show(); //e.g. Officer 2 clicked
+            displayOfficerData(nodeCld.getId()); //display officer data for the given node
         }
     }
 
+    /* Function used to launch the activity in which officer information is displayed */
     private void displayOfficerData(int offiID){
         Intent intent = new Intent(context, DisplayOfficerData.class);
         intent.putExtra("offiID", offiID);
         context.startActivity(intent);
-
     }
 
+    /* Used to detect user input such as tap, drag, etc. */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch(event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 EventState = PAN;
-                StartX = event.getX() - PreviousTranslatedX;
+                StartX = event.getX() - PreviousTranslatedX; //work out click depending on translation of canvas
                 StartY = event.getY() - PreviousTranslatedY;
                 nodeClicked(event.getX(),event.getY());
                 break;
@@ -186,7 +188,7 @@ public class NodeArcGenerator extends View {
                 PreviousTranslatedY = TranslatedY;
                 break;
             case MotionEvent.ACTION_MOVE:
-                TranslatedX = event.getX() - StartX;
+                TranslatedX = event.getX() - StartX; //notifies of where coordinates are currently situated
                 TranslatedY = event.getY() - StartY;
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -195,14 +197,16 @@ public class NodeArcGenerator extends View {
         }
         mScaleGestureDetector.onTouchEvent(event);
         if((EventState == PAN && scaleFactor != minZoom) || EventState == ZOOM) {
-            invalidate();
-            requestLayout();
+            //when zooming or panning, redraw the canvas
+            invalidate();       //change appearance
+            requestLayout();    //change bounds
         }
         return true;
 
 
     }
 
+    /* onMeasure overriden in order to resize the canvas when scaling up or down */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -211,7 +215,6 @@ public class NodeArcGenerator extends View {
         mCanHeight = MeasureSpec.getSize(heightMeasureSpec);
 
         //resize canvas as we scale
-
         int scaleWidth = Math.round(mCanWidth * scaleFactor);
         int scaleHeight = Math.round(mCanHeight * scaleFactor);
         setMeasuredDimension(Math.min(mCanWidth, scaleWidth),Math.min(mCanHeight,scaleHeight));

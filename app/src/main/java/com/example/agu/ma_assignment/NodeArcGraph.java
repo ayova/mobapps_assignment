@@ -65,9 +65,7 @@ public class NodeArcGraph extends AppCompatActivity {
     private static final String TAG = "NodeArcGraph";
 
     NodeArcGenerator v;
-    private FloatingActionButton shareGraphBtn;
     private static final int PERMISSION_REQUEST_CODE = 200;
-    private Thread ex;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,23 +74,7 @@ public class NodeArcGraph extends AppCompatActivity {
         setContentView(v);
         // Set back button in title bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //share button on click method
-//        shareGraphBtn = findViewById(R.id.share_btn);
-//        shareGraphBtn.setOnClickListener(v -> {
-//            if (!checkPermission()) { //if both permissions are granted, it would return 0, hence !checkPermission
-//                Uri shareUri = getBitmapUri(getBitmap(v));
-//                shareGraph(shareUri);
-//            }
-//            else {
-//                if (checkPermission()) { //if either or both permissions not set...
-//                    requestPermissionAndContinue(); //ask user for permission
-//                } else { //otherwise, when set run as intended
-//                    Uri shareUri = getBitmapUri(getBitmap(v));
-//                    shareGraph(shareUri);
-//                }
-//            }
-//
-//        });
+        // Small wait to let data be inserted in the room database
         new Thread(()->{
             try {
                 Thread.sleep(2000);
@@ -101,8 +83,6 @@ public class NodeArcGraph extends AppCompatActivity {
                 e.printStackTrace();
             }
         }).start();
-
-
     }
 
     //share button clicked
@@ -121,18 +101,13 @@ public class NodeArcGraph extends AppCompatActivity {
         }
     }
 
-    // function to go back to previous activity using top btn
-//    public boolean onOptionsItemSelected(MenuItem item){
-//        Intent myIntent = new Intent(getApplicationContext(), SearchActivity.class);
-//        startActivityForResult(myIntent, 0);
-//        return true;
-//    }
-
+    /* Load custom menu that includes the share button up top */
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_with_share, menu);
         return true;
     }
 
+    /* Detect which button was pressed in the top bar in case there were several*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -157,50 +132,56 @@ public class NodeArcGraph extends AppCompatActivity {
         }
     }
 
-    //class extended in order to be able and share photos properly in SDK versions 24 and higher
+    /* Class extended in order to be able and share photos properly in SDK versions 24 and higher */
     public class GenericFileProvider extends FileProvider {}
 
-    public Bitmap getBitmap(View v){ //function to convert the canvas into a bitmap that can be shared
+    /* Function used to convert the View into a Bitmap that can be shared */
+    public Bitmap getBitmap(View v){
         Bitmap viewToBmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(),Bitmap.Config.ARGB_8888); //make a bitmap the size of the view
-        Canvas canvas = new Canvas(viewToBmap); //git the
-        canvas.drawColor(Color.WHITE);
+        Canvas canvas = new Canvas(viewToBmap); // now we have a new canvas that contains our view in bitmap format
+        canvas.drawColor(Color.WHITE); //give it a background colour before sharing
         v.draw(canvas);
-        //return the bitmap
+        //return the bitmap generated
         return viewToBmap;
-
     }
 
-    private Uri getBitmapUri(Bitmap nodeGraph) { //function to save the canvas in bitmap format
+    /* Using a bitmap, save it temporarily using FileOutputStream and get its URI so it can be accessed later */
+    private Uri getBitmapUri(Bitmap nodeGraph) {
         Uri uri = null;
         try {
             File file = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "graph_tobe_shared.png"); //name by which we save the bitmap
             FileOutputStream stream = new FileOutputStream(file); //save the bitmap
             nodeGraph.compress(Bitmap.CompressFormat.PNG, 100, stream);
             stream.close();
-//            uri = Uri.fromFile(file); // not usable for SDK version >= 24
-            uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", file);
+            /*
+            DO NOT USE: uri = Uri.fromFile(file); not usable for SDK version >= 24
+             */
+            uri = FileProvider.getUriForFile(this,BuildConfig.APPLICATION_ID + ".provider", file); //retrieve uri where bitmap was stored
         } catch (IOException e) {
             Log.d(TAG, "Sharing error: " + e.getMessage());
         }
         return uri; //uri where the bitmap is stored
     }
 
+    /* Function that fires the share intent in order to share the Bitmap */
     private void shareGraph(Uri uri){
         Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, uri); //add the bitmap we saved to the intent
+        intent.putExtra(Intent.EXTRA_STREAM, uri); //add the bitmap we saved to the intent through its uri
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setType("image/png"); //tell android what we're sending in the intent
         startActivity(intent);
     }
 
-    // CHECK: permissions in place
+    /* Make sure the required permissions are set for the application */
     private boolean checkPermission() {
-
         /* if either read or write permissions are not granted, this will return 1*/
         return ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
     }
 
+    /*function used to ask for permissions if any are missing
+    * code adapted from: https://stackoverflow.com/questions/47688354/java-io-filenotfoundexception-storage-emulated-0-downloadedfilem-jpg-permissi/47688482
+    * */
     private void requestPermissionAndContinue() {
         if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -208,6 +189,7 @@ public class NodeArcGraph extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, WRITE_EXTERNAL_STORAGE)
                     && ActivityCompat.shouldShowRequestPermissionRationale(this, READ_EXTERNAL_STORAGE)) {
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                // set properties of the permission request pop-up window
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle("Permission required!");
                 alertBuilder.setMessage("Read and write permissions are needed before sharing files");
@@ -226,30 +208,25 @@ public class NodeArcGraph extends AppCompatActivity {
         }
     }
 
+    /*Function used to retry the operation once the pop-up window has been acted on. If permissions granted, then launch share
+    * function adapted from: https://stackoverflow.com/questions/47688354/java-io-filenotfoundexception-storage-emulated-0-downloadedfilem-jpg-permissi/47688482 */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (permissions.length > 0 && grantResults.length > 0) {
 
-                boolean flag = true;
+                boolean flag = true; //permissions now granted by default, but check again
                 for (int i = 0; i < grantResults.length; i++) {
-                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    if (grantResults[i] != PackageManager.PERMISSION_GRANTED) { //if either permission still not granted, false
                         flag = false;
                     }
                 }
-                if (flag) {
+                if (flag) { //if permissions now granted, then launch share action
                     Uri shareUri = getBitmapUri(getBitmap(v));
                     shareGraph(shareUri);
-                } else {
-                    finish();
-                }
-
-            } else {
-                finish();
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+                } else { finish(); }
+            } else { finish(); }
+        } else { super.onRequestPermissionsResult(requestCode, permissions, grantResults); }
     }
 }
