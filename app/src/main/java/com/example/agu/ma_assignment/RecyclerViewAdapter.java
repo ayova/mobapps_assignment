@@ -1,6 +1,5 @@
 package com.example.agu.ma_assignment;
 
-
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Room;
 import android.content.Context;
@@ -41,11 +40,9 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     private ArrayList<String> CNumber;
     private Context mContext;
     private SearchActivity search;
-
     private String CName;
     private String Cnumber;
     private Intent intent;
-
     List<Officer> officers =  new ArrayList<>();
 
     public RecyclerViewAdapter(ArrayList<String> CNames,ArrayList<String> CNumber, Context mContext) {
@@ -55,8 +52,10 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
 
     }
 
+    /* Function used to populate the view based on a template */
     @Override
     public ViewHolder onCreateViewHolder( ViewGroup parent, int i) {
+        //with recycler_layout_display being the template
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_layout_display,parent,false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
@@ -70,12 +69,11 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
         holder.recycler_Temp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //show on log which company is selected/clicked on
                 Log.d("onBind", "onClick: "+ CNames.get(i));
-                //Toast.makeText(mContext, "Clicked on: "+CNames.get(i), Toast.LENGTH_SHORT).show(); // debugging only
 
-                // TODO: 01/03/2019 on click to i(company) save the officers into database (rooms db)
-
-                // intent to open activity: nodearcgraph
+                /* intent to open activity: nodearcgraph and
+                 * pass it both the company name and number */
                 intent = new Intent(mContext, NodeArcGraph.class);
                 //putExtra to attach the data to be sent over to the other activity
                 intent.putExtra("compName", CNames.get(i));
@@ -86,15 +84,10 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                 LiveData<List<Officer>> a = db.officerDao().getAllOfficers1();
                 a.observeForever((List<Officer> listyboi)->{
                     mContext.startActivity(intent);
-
                 });
-                db.close();
-
-
+                db.close(); //close db connection to avoid memory leaks
             }
         });
-
-
     }
 
     @Override
@@ -103,25 +96,27 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-
         TextView recyclerTV;
         ConstraintLayout recycler_Temp;
-
-
         public ViewHolder(View itemView) {
             super(itemView);
             recyclerTV = itemView.findViewById(R.id.tv_recycler_temp);
             recycler_Temp = itemView.findViewById(R.id.recycler_template_layout);
 
         }
-
     }
+
+    /* Delete the officers that may remain in the database from an
+     * older search. Use this before adding new officers to the db */
     private void deleteOldOfficers(){
         AppDatabase db = Room.databaseBuilder(mContext,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
         db.officerDao().deleteAllOfficers();
         db.close();
     }
 
+    /* Function fit for retrieving all officers from the selected company
+     * and storing the relevant details of each officer within that company,
+     * including name, address, nationality, and date of birth. */
     private void api_search_officers(View view, String CNumber, final String CName){
         //first of all delete old officers from the database
         deleteOldOfficers();
@@ -138,14 +133,12 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                         try {
                             //connect with the rooms db
                             AppDatabase db = Room.databaseBuilder(mContext,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
-
                             if(response.getJSONArray("items").length() == 0){
                                 Toast.makeText(RecyclerViewAdapter.this.mContext, "No officers available for this company.", Toast.LENGTH_SHORT).show();
                             }
                             JSONArray arr = response.getJSONArray("items");
                             for (int i = 0; i < arr.length(); i++) {
                                 JSONObject o = arr.getJSONObject(i);
-
                                 //temporal string holders
                                 String name;
                                 String nationality;
@@ -154,6 +147,9 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                 String yr, month; //holders that make up ofDoB
                                 String postCode, cty, stNo, street, ctry; //holders that make up ofAddress
 
+                                /* gather all credentials about directors
+                                *  and check for empty items, like missing
+                                *  names or addresses for example */
                                 if(!o.has("name")){
                                     name = "Unavailable";
                                 }
@@ -188,13 +184,13 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                     }
                                     ofDoB = month + " " + yr;
                                 }
-
-
                                 JSONObject addr = o.getJSONObject("address");
                                 if(!addr.has("postal_code") || !addr.has("locality") || !addr.has("premises") || !addr.has("address_line_1") || !addr.has("country")){
                                     ofAddress = "Unavailable";
                                 }
                                 else {
+                                    /* addr contains each item within "address" from the api call
+                                     * use getString(string) to retrieve each desired item */
                                     postCode = addr.getString("postal_code");
                                     cty = addr.getString("locality");
                                     stNo = addr.getString("premises");
@@ -202,21 +198,15 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
                                     ctry = addr.getString("country");
                                     ofAddress = stNo + " " + street + ", " + cty + ", " + postCode + ". " + ctry;
                                 }
+                                //create the new officer object and populate it with the right information
                                 Officer insertOffi = new Officer();
                                 insertOffi.setOfficerNationality(nationality);
                                 insertOffi.setOfficerAddress(ofAddress);
                                 insertOffi.setOfficerDoB(ofDoB);
                                 insertOffi.setOfficerName(name);
-                                //insert straight to db
+                                //then insert this new officer into the officer database
                                 db.officerDao().insertOfficer(insertOffi);
                             }
-//                            Log what's been added to the room db
-//                            Log.d(TAG, "onResponse: "+ db.officerDao().getOfficerCount());
-//                            for (int i = 0; i < db.officerDao().getOfficerCount(); i++) {
-//
-//                                Log.d(TAG, "offnamedb: "+ db.officerDao().getAllOfficers().get(i).getOfficerName());
-//
-//                            }
                             db.close();
                         } catch (Exception e) { //if the response generates an exception
                             Log.e("Response exception", "onResponse: ",e );
@@ -244,7 +234,5 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
         };
         //Finally, add the request to the request queue
         rQueue.add(JSONretriever);
-
     }
-
 }

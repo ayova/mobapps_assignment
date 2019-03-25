@@ -116,7 +116,8 @@ public class NodeArcGenerator extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.save();
-        canvas.scale(scaleFactor,scaleFactor); // detect pinch x,y
+        canvas.scale(scaleFactor,scaleFactor);
+        // detect pinch x,y
         if((TranslatedX * -1) < 0) {
             TranslatedX = 0;
         } else if ((TranslatedX * -1) > canvas.getWidth() * scaleFactor - getWidth()) {

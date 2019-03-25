@@ -27,6 +27,7 @@ public class DisplayOfficerData extends AppCompatActivity {
         displayOfficer(officerId);
 
     }
+    /* Function used to retrieve the officer id established in the previous activity */
     private int getIntentData(){
         try{
             Intent intent = getIntent();
@@ -40,15 +41,18 @@ public class DisplayOfficerData extends AppCompatActivity {
         }
         return officerId;
     }
+
+    /* Populate the text views in the template with the information relevant to the selected officer*/
     private void displayOfficer(int officerId){
         AppDatabase db = Room.databaseBuilder(this,AppDatabase.class,"officerDB").allowMainThreadQueries().build();
-        Officer offi = db.officerDao().getAllOfficers().get(officerId);
-        String txname, txdob,txnat, txaddr;
+        Officer offi = db.officerDao().getAllOfficers().get(officerId); //fetch the officer by the given Id
+        String txname, txdob,txnat, txaddr; //store the info
         txname = offi.getOfficerName();
         txdob = offi.getOfficerDoB();
         txnat = offi.getOfficerNationality();
         txaddr = offi.getOfficerAddress();
         Log.i(TAG, "displayOfficer: "+offi.getOfficerName()+offi.getOfficerAddress()+offi.getOfficerDoB()+offi.getOfficerNationality());
+        //display the information in the text views
         officerAddress.setText(txname);
         officerDob.setText(txdob);
         officerNationality.setText(txnat);

@@ -7,11 +7,11 @@ import android.util.Log;
 
 public class Node extends Canvas {
 
-    // TODO: 01/03/2019 give nodes id so they are unique and correspond to one officer
     private float x=0;
     private float y=0;
     private int radius;
     private int id;
+
     public Node(int id, float x, float y, int radius) {
         this.id = id;
         this.x = x;
@@ -47,11 +47,17 @@ public class Node extends Canvas {
     public int getNodeRadius(){return this.radius;}
 
 
+    /* Draw the given node in the specified canvas */
     public void drawNode(Canvas canvas, Node node){
+        //node and canvas are passed when calling the function
         Paint generic = new Paint();
         generic.setColor(Color.RED);
         canvas.drawCircle(node.nodeGetX(),node.nodeGetY(),50, generic);
     }
+
+    /* Different instance of the same function where it may also contain
+     * a string that determines "who" the node is. Useful for differentiating
+     * between node types and applying different styles. */
     public void drawNode(Canvas canvas, Node node, String who){
         Paint generic = new Paint();
         if (who == "officer" ){
@@ -60,6 +66,7 @@ public class Node extends Canvas {
         canvas.drawCircle(node.nodeGetX(),node.nodeGetY(),50, generic);
     }
 
+    /* Function that retrieves the top,left,right,bottom coordinates of a node*/
     public float[] getNodeArea(Node node){
         //calculate the borders where to register the clicks
         float left = node.nodeGetX() - node.getNodeRadius();
